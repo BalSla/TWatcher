@@ -28,7 +28,7 @@ namespace TorrentWatcher
 			_console.Write ("Work has been canceled.");
 		}
 
-		void AddWatch (TorrentTarget idleItem)
+		BackgroundWorker AddWatch (TorrentTarget idleItem)
 		{
 			throw new NotImplementedException ();
 		}
@@ -41,12 +41,16 @@ namespace TorrentWatcher
 			_consoleReader.RunWorkerCompleted += new RunWorkerCompletedEventHandler (ConsoleReader_WorkCompleted);
 			_consoleReader.RunWorkerAsync ();
 
-			while (_consoleReader.IsBusy) {
+			while (_consoleReader.IsBusy) 
+			{
+				_reader.ProcessQueue ();
+				// create and start watcher for each item
 				foreach (TorrentTarget idleItem in _reader.IdleItems()) {
 					_workers.Add(AddWatch (idleItem));
 				}
 				Thread.Sleep (1000);
 			}
+			_reader.SaveIncompleted ();
 		}
 
 		private MyConsole _console;
