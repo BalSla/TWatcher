@@ -1,15 +1,17 @@
 using System;
+using System.Collections.Generic;
 
 namespace TorrentWatcher
 {
 	public class MyConsole
 	{
-		public void Debug (string text)
+		public void Debug (string text, params object[] args)
 		{
 			if (DebugOn) {
-				Write (text);
+				Write (text,args);
 			}
 		}
+		private List<string> _debugOutput= new List<string>();
 
 		public MyConsole ()
 		{
@@ -20,11 +22,14 @@ namespace TorrentWatcher
 		public void Write(string text)
 		{
 			Console.WriteLine (text);
+			if (DebugOn) {
+				_debugOutput.Add (text);
+			}
 		}
 
 		public void Write (string text, params object[] args)
 		{
-			Console.WriteLine (text, args);
+			Write(string.Format(text, args));
 		}
 	}
 }

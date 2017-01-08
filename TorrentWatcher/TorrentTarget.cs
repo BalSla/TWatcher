@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace TorrentWatcher
 {
@@ -8,14 +9,15 @@ namespace TorrentWatcher
 		public TorrentTarget (string content)
 		{
 			Name = content.Trim ();
+			Discovered=new List<string>();
 		}
 
 		public string Name{ get; private set; }
-		public string Site{ get; private set; }
+		public List<string> Discovered {get; private set; }
 
 		public TorrentTarget ()
 		{
-
+			Discovered=new List<string>();
 		}
 	}
 }
