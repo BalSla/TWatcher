@@ -7,14 +7,18 @@ namespace TorrentWatcher.Parsers
 	{
 		#region IParsersManager implementation
 
-		public IList<string> FindLinks (string searchString)
+		public IList<string> FindLinks (string searchString, SearchCondition condition)
 		{
-			throw new NotImplementedException ();
+		List<string> list = new List<string> ();
+			foreach (IParser item in _parsers) {
+				list.AddRange(item.FindLinks (searchString, condition));
+			}
+			return list;
 		}
 
 		#endregion
 
-		private List<IParser> _parsers;
+		private List<IParser> _parsers = new List<IParser> ();
 		public ParsersManager (params IParser[] args)
 		{
 			_parsers.AddRange (args);

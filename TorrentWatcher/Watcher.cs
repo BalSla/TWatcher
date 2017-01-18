@@ -8,12 +8,13 @@ using System.Net;
 using System.Web;
 using System.IO;
 using TorrentWatcher.Parsers;
+using System.Diagnostics;
 
 namespace TorrentWatcher
 {
 	public class Watcher
 	{
-		private List<BackgroundWorker> _workers = new List<BackgroundWorker> ();
+		private List<TorrentBackgroundWorker> _workers = new List<TorrentBackgroundWorker> ();
 		private BackgroundWorker _consoleReader = new BackgroundWorker();
 		private bool _completed=false;
 
@@ -31,11 +32,27 @@ namespace TorrentWatcher
 		void ConsoleReader_WorkCompleted (object sender, RunWorkerCompletedEventArgs e)
 		{
 			_console.Write ("Canceling work...");
+			_console.Debug ("Console reader state(0) is busy={0}", _consoleReader.IsBusy);
 			// stop _workers
 			foreach (var item in _workers) {
+				_console.Debug ("Stopping [{0}]...", item.Name);
 				item.CancelAsync ();
 			}
+			bool allStopped = false;
+			while (!allStopped) {
+				foreach (var item in _workers) {
+					allStopped = true;
+					if (item.IsBusy) {
+						_console.Debug ("[{0}] still active...", item.Name);
+						allStopped=false;
+					}
+				}
+				_console.Debug ("Console reader state(1) is busy={0}", _consoleReader.IsBusy);
+				Thread.Sleep (6000);
+			}
+			_reader.SaveIncompleted ();
 			_console.Write ("Work finished.");
+			_completed = true;
 		}
 
 		void TorrentBackgroundWorker_DoWork (object sender, DoWorkEventArgs e)
@@ -45,7 +62,8 @@ namespace TorrentWatcher
 
 		void TorrentBackgroundWorker_WorkCompleted (object sender, RunWorkerCompletedEventArgs e)
 		{
-			throw new NotImplementedException ();
+			_console.Debug ("Torrent watcher has completed work.");
+			_console.Debug ("State is busy={0}", ((TorrentBackgroundWorker)sender).IsBusy);
 		}
 
 		TorrentBackgroundWorker AddWatch (TorrentTarget idleItem)
@@ -62,23 +80,33 @@ namespace TorrentWatcher
 		public void Start ()
 		{
 			_console.Write ("Starting TorrentWatcher...");
-			_parserManager = new ParsersManager (new KrutorParser());
+			IParser krutor = new KrutorParser ();
+			_parserManager = new ParsersManager (krutor);
 			_console.Debug ("Watcher started");
 			_consoleReader.WorkerSupportsCancellation = true;
 			_consoleReader.DoWork += new DoWorkEventHandler (ConsoleReader_DoWork);
 			_consoleReader.RunWorkerCompleted += new RunWorkerCompletedEventHandler (ConsoleReader_WorkCompleted);
 			_consoleReader.RunWorkerAsync ();
 
-			while (_consoleReader.IsBusy) 
+			Stopwatch timer = null;
+			while (_consoleReader.IsBusy || !_completed) 
 			{
-				_reader.ProcessQueue ();
-				// create and start watcher for each item
-				foreach (TorrentTarget idleItem in _reader.IdleItems()) {
-					_workers.Add(AddWatch (idleItem));
+				if (timer == null || timer.ElapsedMilliseconds > 60000) {
+					if (timer != null) {
+						_console.Debug ("Elapsed time={0}", timer.ElapsedMilliseconds);
+					}
+					_reader.ProcessQueue ();
+					// create and start watcher for each item
+					timer = new Stopwatch ();
+					timer.Start ();
+					foreach (TorrentTarget idleItem in _reader.IdleItems()) {
+						_workers.Add (AddWatch (idleItem));
+					}
+					_console.Debug ("Elapsed time after queue={0}", timer.ElapsedMilliseconds);
 				}
+				//TODO: define sleep
 				Thread.Sleep (1000);
 			}
-			_reader.SaveIncompleted ();
 		}
 
 		private MyConsole _console;

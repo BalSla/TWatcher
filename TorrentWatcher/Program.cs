@@ -7,7 +7,7 @@ namespace TorrentWatcher
 		public static void Main (string[] args)
 		{
 			MyConsole console = new MyConsole ();
-			TargetReader reader = new TargetReader ("torrents.xml");
+			TargetReader reader = new TargetReader (console);
 
 			try
 			{
