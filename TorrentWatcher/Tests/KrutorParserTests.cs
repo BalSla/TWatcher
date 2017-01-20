@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using TorrentWatcher.Parsers;
 using System.Collections.Generic;
+using TorrentWatcher.Helpers;
 
 namespace TorrentWatcher
 {

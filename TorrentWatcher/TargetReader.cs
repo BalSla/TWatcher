@@ -52,7 +52,7 @@ namespace TorrentWatcher
 				} else {
 					_targets = new List<TorrentTarget> ();
 				}
-				_console.Write ("Red {0} items watched items.", _targets.Count);
+				_console.Write ("Red {0} watched items.", _targets.Count);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace TorrentWatcher
 		{
 			ReadQueue ();
 			_console.Debug ("Reading new entries within working folder...");
-			foreach (var item in new DirectoryInfo(".").GetFiles("*.txt")) {
+			foreach (FileInfo item in new DirectoryInfo(".").GetFiles("*.txt")) {
 			string content = File.ReadAllText (item.FullName);
 				//TODO:add books, documental and russian
 				if (content.StartsWith ("Completed:")) {
@@ -86,7 +86,7 @@ namespace TorrentWatcher
 					int episode = ExctractEpisode(content);
 					TorrentTarget newTarget = new TorrentTarget (name, SearchCondition.TvSeries, season, episode);
 					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
-						_targets.Add (newTarget);
+						AddTarget(newTarget);
 					}
 				}else if (content.StartsWith ("TVS[")) {
 					string name = ExctractName (content);
@@ -94,14 +94,16 @@ namespace TorrentWatcher
 					int episode = ExctractEpisode(content);
 					TorrentTarget newTarget = new TorrentTarget (name, SearchCondition.TvSeries, season, episode);
 					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
-						_targets.Add (newTarget);
+						AddTarget(newTarget);
 					}
 				} else {
 					TorrentTarget newTarget = new TorrentTarget (content, SearchCondition.Movie);
 					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
-						_targets.Add (newTarget);
+						AddTarget(newTarget);
 					}
 				}
+				// delete input file
+				File.Delete (item.FullName);
 			}
 		}
 
@@ -109,6 +111,7 @@ namespace TorrentWatcher
 		{
 			if (!target.Name.Contains("]")) {
 				_targets.Add (target);
+				_console.Write ("Added new watching target [{0}] ({1}).", target.Name, target.SearchCondition);
 			}
 		}
 

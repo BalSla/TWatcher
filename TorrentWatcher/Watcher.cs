@@ -14,6 +14,12 @@ namespace TorrentWatcher
 {
 	public class Watcher
 	{
+		public void Add (string item, string category)
+		{
+			File.WriteAllText (Path.GetRandomFileName()+".txt" ,item);
+			_console.Write ("Created ticket for [{0}] ({1}).", item, category);
+		}
+
 		private List<TorrentBackgroundWorker> _workers = new List<TorrentBackgroundWorker> ();
 		private BackgroundWorker _consoleReader = new BackgroundWorker();
 		private bool _completed=false;
@@ -53,6 +59,7 @@ namespace TorrentWatcher
 			}
 			_reader.SaveIncompleted ();
 			_console.Write ("Work finished.");
+			//TODO: Publish statisctics
 			_completed = true;
 		}
 
@@ -63,8 +70,8 @@ namespace TorrentWatcher
 
 		void TorrentBackgroundWorker_WorkCompleted (object sender, RunWorkerCompletedEventArgs e)
 		{
-			_console.Debug ("Torrent watcher has completed work.");
-			_console.Debug ("State is busy={0}", ((TorrentBackgroundWorker)sender).IsBusy);
+			//TODO: Publish new found links
+			_console.Debug ("Torrent watcher [{0}] has completed work.", ((TorrentBackgroundWorker)sender).Name);
 		}
 
 		TorrentBackgroundWorker AddWatch (TorrentTarget idleItem)
@@ -95,19 +102,17 @@ namespace TorrentWatcher
 			while (_consoleReader.IsBusy || !_completed) 
 			{
 				if (timer == null || timer.ElapsedMilliseconds > 60000) {
-					if (timer != null) {
-						_console.Debug ("Elapsed time={0}", timer.ElapsedMilliseconds);
-					}
 					_reader.ProcessQueue ();
 					// create and start watcher for each item
 					timer = new Stopwatch ();
 					timer.Start ();
 					foreach (TorrentTarget idleItem in _reader.IdleItems()) {
-						if (_workers.Find(x=>x.Name==idleItem.Name)!=null) {
-							_workers.Add (AddWatch (idleItem));
+						if (_workers.Find(x=>x.Name==idleItem.Name)==null) {
+							TorrentBackgroundWorker newWorker = AddWatch (idleItem);
+							_workers.Add (newWorker);
+							_console.Debug ("Watcher [{0}] added to queue.", newWorker.Name);
 						}
 					}
-					_console.Debug ("Elapsed time after queue={0}", timer.ElapsedMilliseconds);
 				}
 				//TODO: define sleep
 				Thread.Sleep (1000);

@@ -13,6 +13,15 @@ namespace TorrentWatcher.Helpers
 			}
 			return false;
 		}
+
+		public static string KeyValue(this List<string> args, string key)
+		{
+			string t = args.Find(x=>x.StartsWith("/"+key+":"));
+			if (t!=null) {
+				return t.Replace ("/" + key + ":", "");
+			}
+			return "";
+		}
 	}
 }
 
