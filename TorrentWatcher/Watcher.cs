@@ -40,14 +40,15 @@ namespace TorrentWatcher
 			}
 			bool allStopped = false;
 			while (!allStopped) {
+				allStopped = true;
 				foreach (var item in _workers) {
-					allStopped = true;
 					if (item.IsBusy) {
 						_console.Debug ("[{0}] still active...", item.Name);
 						allStopped=false;
 					}
 				}
 				_console.Debug ("Console reader state(1) is busy={0}", _consoleReader.IsBusy);
+				_console.Debug ("allStopped={0}", allStopped);
 				Thread.Sleep (6000);
 			}
 			_reader.SaveIncompleted ();
@@ -82,6 +83,8 @@ namespace TorrentWatcher
 			_console.Write ("Starting TorrentWatcher...");
 			IParser krutor = new KrutorParser ();
 			_parserManager = new ParsersManager (krutor);
+			//TODO: implement Kinozal.tv parser
+			//TODO: implement lostfilm.tv parser
 			_console.Debug ("Watcher started");
 			_consoleReader.WorkerSupportsCancellation = true;
 			_consoleReader.DoWork += new DoWorkEventHandler (ConsoleReader_DoWork);
@@ -100,7 +103,9 @@ namespace TorrentWatcher
 					timer = new Stopwatch ();
 					timer.Start ();
 					foreach (TorrentTarget idleItem in _reader.IdleItems()) {
-						_workers.Add (AddWatch (idleItem));
+						if (_workers.Find(x=>x.Name==idleItem.Name)!=null) {
+							_workers.Add (AddWatch (idleItem));
+						}
 					}
 					_console.Debug ("Elapsed time after queue={0}", timer.ElapsedMilliseconds);
 				}

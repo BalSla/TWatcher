@@ -27,6 +27,7 @@ namespace TorrentWatcher
 
 		void RemoveItem (string str)
 		{
+			str = str.TrimEnd ();
 			TorrentTarget target = _targets.Find (x => x.Name == str);
 			if (target!=null) {
 				_targets.Remove (target);
@@ -71,10 +72,12 @@ namespace TorrentWatcher
 		public void ProcessQueue ()
 		{
 			ReadQueue ();
+			_console.Debug ("Reading new entries within working folder...");
 			foreach (var item in new DirectoryInfo(".").GetFiles("*.txt")) {
 			string content = File.ReadAllText (item.FullName);
 				//TODO:add books, documental and russian
 				if (content.StartsWith ("Completed:")) {
+					_console.Debug ("Found completed item [{0}].", content);
 					RemoveItem (content.Replace ("Completed:", ""));
 				} else if(content.StartsWith ("CompletedTVS[")){
 					string name = ExctractName (content);

@@ -13,7 +13,8 @@ namespace TorrentWatcher
 		private const string NEW_ITEM_FILE_1 = "newitem1.txt";
 		private const string NEW_MOVIE = "New Movie";
 		private const string NEW_TV_SERIES = "TVS[2,3]:New TV Series";
-		private const string COMPLETED_MOVIE = "Completed:New Movie";
+		private const string COMPLETED_MOVIE = @"Completed:New Movie
+";
 		private const string COMPLETED_TV_SERIES = "CompletedTVS[3,4]:New TV Series";
 		private const string SAVED_ITEMS = @"";
 		private TargetReader _reader;
