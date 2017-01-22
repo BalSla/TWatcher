@@ -9,6 +9,8 @@ namespace TorrentWatcher
 	public class TargetReader : ITargetReader
 	{
 		private  const string QUEUE="queue.xml";
+		private int _addedItems;
+
 		#region ITargetReader implementation
 
 		public void SaveIncompleted ()
@@ -107,10 +109,14 @@ namespace TorrentWatcher
 			}
 		}
 
+		public int AddedItems
+		{ get { return _addedItems; } }
+
 		private void AddTarget(TorrentTarget target)
 		{
 			if (!target.Name.Contains("]")) {
 				_targets.Add (target);
+				_addedItems++;
 				_console.Write ("Added new watching target [{0}] ({1}).", target.Name, target.SearchCondition);
 			}
 		}

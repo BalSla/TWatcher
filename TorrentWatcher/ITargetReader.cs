@@ -18,6 +18,7 @@ namespace TorrentWatcher
 		/// Reads new item. Create TorrentTarget or delet for completed.
 		/// </summary>
 		void ProcessQueue ();
+		int AddedItems{ get; }
 	}
 }
 

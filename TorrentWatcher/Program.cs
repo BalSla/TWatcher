@@ -26,9 +26,9 @@ namespace TorrentWatcher
 				Environment.Exit (0);
 			}
 
-			//TODO: Command to hide links
+			//TODO: Command to remove watcher (also should remove specified title in links.html)
+			//TODO: Command to hide links (remove all links under specified title in links.html)
 			//TODO: Command to watch for next series
-			//TODO: Command to remove watcher
 
 			try
 			{

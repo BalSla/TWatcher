@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B46A512F-BA8F-4A7F-8885-70B7F6E871B3}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TorrentWatcher</RootNamespace>
+    <AssemblyName>TorrentWatcher</AssemblyName>
+    <StartupObject>TorrentWatcher.MainClass</StartupObject>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="CsQuery">
+      <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="nunit.framework" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Web" />
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq">
+      <HintPath>..\packages\Moq.4.5.30\lib\net45\Moq.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MyConsole.cs" />
+    <Compile Include="Watcher.cs" />
+    <Compile Include="TorrentTarget.cs" />
+    <Compile Include="ITargetReader.cs" />
+    <Compile Include="TargetReader.cs" />
+    <Compile Include="Tests\TargetReaderTests.cs" />
+    <Compile Include="TorrentBackgroundWorker.cs" />
+    <Compile Include="Tests\TorrentBackgroundWorkerTests.cs" />
+    <Compile Include="Tests\TestData.cs" />
+    <Compile Include="Tests\TorrentTargetTests.cs" />
+    <Compile Include="Parsers\KrutorParser.cs" />
+    <Compile Include="Parsers\IParser.cs" />
+    <Compile Include="Parsers\ParsersManager.cs" />
+    <Compile Include="Helpers\ListExtentions.cs" />
+    <Compile Include="Parsers\IParsersManager.cs" />
+    <Compile Include="Parsers\SearchCondition.cs" />
+    <Compile Include="Tests\KrutorParserTests.cs" />
+    <Compile Include="Tests\ListExtentionsTests.cs" />
+    <Compile Include="ITorrentBackgroundWorker.cs" />
+    <Compile Include="IPublisher.cs" />
+    <Compile Include="HtmlLinkPublisher.cs" />
+    <Compile Include="Tests\HtmlLinkPublisherTests.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\" />
+    <Folder Include="Parsers\" />
+    <Folder Include="Helpers\" />
+  </ItemGroup>
+</Project>

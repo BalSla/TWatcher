@@ -9,11 +9,27 @@ using System.Web;
 using System.IO;
 using TorrentWatcher.Parsers;
 using System.Diagnostics;
+using System.Timers;
 
 namespace TorrentWatcher
 {
 	public class Watcher
 	{
+		private MyConsole _console;
+		private ITargetReader _reader;
+		private int _linksFoundCount;
+		private IPublisher _publisher;
+
+		public Watcher (MyConsole console, ITargetReader reader)
+		{
+			_console = console;
+			_reader = reader;
+			_console.DebugOn = true;
+			_publisher = new HtmlLinkPublisher ();
+			_console.Write ("Torrent trecker started.");
+			_console.Debug ("Debug mode is on.");
+		}
+
 		public void Add (string item, string category)
 		{
 			File.WriteAllText (Path.GetRandomFileName()+".txt" ,item);
@@ -22,20 +38,28 @@ namespace TorrentWatcher
 
 		private List<TorrentBackgroundWorker> _workers = new List<TorrentBackgroundWorker> ();
 		private BackgroundWorker _consoleReader = new BackgroundWorker();
-		private bool _completed=false;
 
 		void ConsoleReader_DoWork (object sender, DoWorkEventArgs e)
 		{
 			while (true) {
 				ConsoleKeyInfo key = Console.ReadKey ();
-				if (key.Key==ConsoleKey.C )
+				if (key.Key==ConsoleKey.C)
 				{ 
+					ConsoleReader_WorkCompleted ();
 					return;
 				}
 			}
 		}
 
-		void ConsoleReader_WorkCompleted (object sender, RunWorkerCompletedEventArgs e)
+		void PublishStatistics ()
+		{
+			_console.Write("SESSION STATISTICS:");
+			_console.Write ("  {0} item(s) added to watching list", _reader.AddedItems);
+			_console.Write ("  {0} item(s) removed from watching list", _reader.AddedItems);
+			_console.Write ("  {0} link(s) found", _linksFoundCount);
+		}
+
+		void ConsoleReader_WorkCompleted ()
 		{
 			_console.Write ("Canceling work...");
 			_console.Debug ("Console reader state(0) is busy={0}", _consoleReader.IsBusy);
@@ -59,27 +83,29 @@ namespace TorrentWatcher
 			}
 			_reader.SaveIncompleted ();
 			_console.Write ("Work finished.");
-			//TODO: Publish statisctics
-			_completed = true;
+			PublishStatistics ();
 		}
 
 		void TorrentBackgroundWorker_DoWork (object sender, DoWorkEventArgs e)
 		{
-			((TorrentBackgroundWorker)sender).DoPersonalWork ();
+			((TorrentBackgroundWorker)sender).DoPersonalWork (e);
 		}
 
 		void TorrentBackgroundWorker_WorkCompleted (object sender, RunWorkerCompletedEventArgs e)
 		{
-			//TODO: Publish new found links
-			_console.Debug ("Torrent watcher [{0}] has completed work.", ((TorrentBackgroundWorker)sender).Name);
+			ITorrentBackgroundWorker worker = (ITorrentBackgroundWorker)sender;
+			_publisher.Publish (worker.Name, worker.NewLinks);
+			//TODO:remove property LinksFoundCount, use NewLinks.Count
+			_linksFoundCount += worker.LinksFoundCount;
+			_console.Debug ("Torrent watcher [{0}] has completed work.", worker.Name);
+			_console.Debug ("   found {0} torrent(s).", worker.NewLinks.Count);
 		}
 
 		TorrentBackgroundWorker AddWatch (TorrentTarget idleItem)
 		{
-			TorrentBackgroundWorker worker = new TorrentBackgroundWorker (idleItem, _console, _parserManager);
+			var worker = new TorrentBackgroundWorker (idleItem, _console, _parserManager);
 			worker.DoWork += new DoWorkEventHandler (TorrentBackgroundWorker_DoWork);
 			worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler (TorrentBackgroundWorker_WorkCompleted);
-			worker.RunWorkerAsync ();
 			return worker;
 		}
 
@@ -95,39 +121,41 @@ namespace TorrentWatcher
 			_console.Debug ("Watcher started");
 			_consoleReader.WorkerSupportsCancellation = true;
 			_consoleReader.DoWork += new DoWorkEventHandler (ConsoleReader_DoWork);
-			_consoleReader.RunWorkerCompleted += new RunWorkerCompletedEventHandler (ConsoleReader_WorkCompleted);
+			//_consoleReader.RunWorkerCompleted += new RunWorkerCompletedEventHandler (ConsoleReader_WorkCompleted);
 			_consoleReader.RunWorkerAsync ();
 
-			Stopwatch timer = null;
-			while (_consoleReader.IsBusy || !_completed) 
-			{
-				if (timer == null || timer.ElapsedMilliseconds > 60000) {
-					_reader.ProcessQueue ();
-					// create and start watcher for each item
-					timer = new Stopwatch ();
-					timer.Start ();
-					foreach (TorrentTarget idleItem in _reader.IdleItems()) {
-						if (_workers.Find(x=>x.Name==idleItem.Name)==null) {
-							TorrentBackgroundWorker newWorker = AddWatch (idleItem);
-							_workers.Add (newWorker);
-							_console.Debug ("Watcher [{0}] added to queue.", newWorker.Name);
-						}
-					}
-				}
-				//TODO: define sleep
+			RenewQueue ();
+
+			System.Timers.Timer tim = new System.Timers.Timer ();
+			tim.Interval = 60000;
+			tim.AutoReset = true;
+			tim.Elapsed += new ElapsedEventHandler (RenewQueueAndStartProcess);
+			tim.Start ();
+
+			while (_consoleReader.IsBusy) {
 				Thread.Sleep (1000);
 			}
 		}
 
-		private MyConsole _console;
-		private ITargetReader _reader;
-		public Watcher (MyConsole console, ITargetReader reader)
+		void RenewQueue ()
 		{
-			_console = console;
-			_reader = reader;
-			_console.DebugOn = true;
-			_console.Write ("Torrent trecker started.");
-			_console.Debug ("Debug mode is on.");
+			_reader.ProcessQueue ();
+			// create and start watcher for each item
+			foreach (TorrentTarget idleItem in _reader.IdleItems()) {
+				if (_workers.Find(x=>x.Name==idleItem.Name)==null) {
+					TorrentBackgroundWorker newWorker = AddWatch (idleItem);
+					_workers.Add (newWorker);
+					_console.Debug ("Watcher [{0}] added to queue.", newWorker.Name);
+				}
+			}
+			foreach (var item in _workers) {
+				item.RunWorkerAsync ();
+			}
+		}
+
+		void RenewQueueAndStartProcess (object sender, ElapsedEventArgs e)
+		{
+			RenewQueue ();
 		}
 	}
 }
