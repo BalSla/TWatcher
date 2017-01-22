@@ -3,15 +3,40 @@ using System.Collections.Generic;
 using System.IO;
 using CsQuery;
 using CsQuery.ExtensionMethods;
+using System.Text;
+using System.Web;
 
 namespace TorrentWatcher
 {
 	public class HtmlLinkPublisher : IPublisher
 	{
-		private const string OUTPUT_HTML="links.html";
+		private string _targetFile;
 		private object writeLocker = new object ();
 
 		#region IPublisher implementation
+
+		public void Remove (string title)
+		{
+			lock (writeLocker) {
+				if (File.Exists (_targetFile)) {
+					CQ doc = CQ.CreateFromFile (_targetFile);
+					doc.Select (string.Format ("h2:contains({0})", title)).Filter(x=>HttpUtility.HtmlDecode(x.InnerText)==title).Next ().Remove().Render();
+					doc.Select (string.Format ("h2:contains({0})", title)).Filter(x=>HttpUtility.HtmlDecode(x.InnerText)==title).Remove().Render();
+					doc.Save (_targetFile, DomRenderingOptions.Default);
+				}
+			}
+		}
+
+		public void Hide (string title)
+		{
+			lock (writeLocker) {
+				if (File.Exists (_targetFile)) {
+					CQ doc = CQ.CreateFromFile (_targetFile);
+					doc.Select (string.Format ("h2:contains({0})", title)).Filter(x=>HttpUtility.HtmlDecode(x.InnerText)==title).Next ().Remove().Render();
+					doc.Save (_targetFile, DomRenderingOptions.Default);
+				}
+			}
+		}
 
 		string UnsortedListOfLinks (IList<string> links)
 		{
@@ -25,10 +50,10 @@ namespace TorrentWatcher
 			lock (writeLocker) {
 				if (links.Count != 0) {
 					CQ doc;
-					if (!File.Exists (OUTPUT_HTML)) {
+					if (!File.Exists (_targetFile)) {
 						doc = CQ.CreateDocument ("<html><body><H1 id=header>TorrentWatcher links</H1><body><html>");
 					} else {
-						doc = CQ.CreateFromFile (OUTPUT_HTML);
+						doc = CQ.CreateFromFile (_targetFile);
 					}
 					CQ fragment;
 					if (doc.Select (string.Format ("h2:contains({0})", title)).Length != 0) {
@@ -38,15 +63,16 @@ namespace TorrentWatcher
 						fragment = CQ.CreateFragment (string.Format ("<H2>{0}</H2><ul>{1}</ul>", title, UnsortedListOfLinks (links)));
 						doc.Select ("#header").After (fragment).Render ();
 					}
-					doc.Save (OUTPUT_HTML, DomRenderingOptions.Default);
+					doc.Save (_targetFile, DomRenderingOptions.Default);
 				}
 			}
 		}
 
 		#endregion
 
-		public HtmlLinkPublisher ()
+		public HtmlLinkPublisher (string target)
 		{
+			_targetFile = target;
 		}
 	}
 }

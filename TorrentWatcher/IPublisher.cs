@@ -15,7 +15,9 @@ namespace TorrentWatcher
 {
 	interface IPublisher
 	{
+		void Hide (string hide);
 		void Publish(string title, IList<string> links);
+		void Remove (string remove);
 	}
 }
 

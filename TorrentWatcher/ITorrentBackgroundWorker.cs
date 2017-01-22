@@ -8,7 +8,6 @@ namespace TorrentWatcher
 	{
 		string Name { get; }
 		IList<string> NewLinks { get;}
-		int LinksFoundCount{ get; }
 	}
 }
 

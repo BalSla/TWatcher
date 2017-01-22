@@ -25,9 +25,21 @@ namespace TorrentWatcher
 			_console = console;
 			_reader = reader;
 			_console.DebugOn = true;
-			_publisher = new HtmlLinkPublisher ();
+			_publisher = new HtmlLinkPublisher ("links.html");
 			_console.Write ("Torrent trecker started.");
 			_console.Debug ("Debug mode is on.");
+		}
+
+		public void Remove (string remove)
+		{
+			File.WriteAllText (Path.GetRandomFileName()+".txt" ,string.Format("Completed:{0}",remove));
+			_console.Write ("Created ticket to delete [{0}].", remove);
+			_publisher.Remove (remove);
+		}
+
+		public void Hide (string hide)
+		{
+			_publisher.Hide (hide);
 		}
 
 		public void Add (string item, string category)
@@ -95,8 +107,7 @@ namespace TorrentWatcher
 		{
 			ITorrentBackgroundWorker worker = (ITorrentBackgroundWorker)sender;
 			_publisher.Publish (worker.Name, worker.NewLinks);
-			//TODO:remove property LinksFoundCount, use NewLinks.Count
-			_linksFoundCount += worker.LinksFoundCount;
+			_linksFoundCount += worker.NewLinks.Count;
 			_console.Debug ("Torrent watcher [{0}] has completed work.", worker.Name);
 			_console.Debug ("   found {0} torrent(s).", worker.NewLinks.Count);
 		}

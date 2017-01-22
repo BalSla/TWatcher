@@ -15,6 +15,8 @@ namespace TorrentWatcher
 
 			string item=arguments.KeyValue("add");
 			string category = arguments.KeyValue("category");
+			string remove = arguments.KeyValue ("remove");
+			string hide = arguments.KeyValue ("hide");
 
 			Watcher watcher = new Watcher (console, reader);
 
@@ -24,11 +26,18 @@ namespace TorrentWatcher
 			} else if (!string.IsNullOrEmpty (item)) {
 				watcher.Add (item, "movie");
 				Environment.Exit (0);
+			} else if(!string.IsNullOrEmpty(remove)){
+				watcher.Remove (remove);
+				Environment.Exit (0);
+			} else if(!string.IsNullOrEmpty(hide)){
+				watcher.Hide (hide);
+				Environment.Exit (0);
 			}
 
-			//TODO: Command to remove watcher (also should remove specified title in links.html)
-			//TODO: Command to hide links (remove all links under specified title in links.html)
+			//TODO: Start as service with key
+			//TODO: Command to hide ALL links (remove all links under specified title in links.html)
 			//TODO: Command to watch for next series
+			//TODO: Command help
 
 			try
 			{
