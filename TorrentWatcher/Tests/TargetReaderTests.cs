@@ -8,7 +8,6 @@ namespace TorrentWatcher
 	[TestFixture()]
 	public class TargetReaderTests
 	{
-		private const string QUEUE = "queue.xml";
 		private const string NEW_ITEM_FILE = "newitem.txt";
 		private const string NEW_ITEM_FILE_1 = "newitem1.txt";
 		private const string NEW_MOVIE = "New Movie";
@@ -17,12 +16,12 @@ namespace TorrentWatcher
 ";
 		private const string COMPLETED_TV_SERIES = "CompletedTVS[3,4]:New TV Series";
 		private const string SAVED_ITEMS = @"";
-		private TargetReader _reader;
+		//private TargetReader _reader;
 
 		[TestFixtureSetUp()]
 		public void TestFixtureSetup()
 		{
-			_reader = new TargetReader (new MyConsole());
+			//_reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 		}
 
 		[Test()]
@@ -30,7 +29,7 @@ namespace TorrentWatcher
 		{
 			DeleteTestDataFiles ();
 			File.WriteAllText (NEW_ITEM_FILE, NEW_TV_SERIES);
-			_reader = new TargetReader (new MyConsole());
+			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 			_reader.ProcessQueue ();
 
 			Assert.AreEqual("New TV Series", _reader.IdleItems()[0].Name, "Wrong name!");
@@ -43,7 +42,7 @@ namespace TorrentWatcher
 		{
 			DeleteTestDataFiles ();
 			File.WriteAllText (NEW_ITEM_FILE, NEW_TV_SERIES);
-			_reader = new TargetReader (new MyConsole());
+			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 			_reader.ProcessQueue ();
 
 			DeleteTestDataFiles ();
@@ -59,7 +58,7 @@ namespace TorrentWatcher
 		public void ProcessQueue_New_Item()
 		{
 			File.WriteAllText (NEW_ITEM_FILE, NEW_MOVIE);
-			_reader = new TargetReader (new MyConsole());
+			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 			_reader.ProcessQueue ();
 
 			Assert.AreEqual(NEW_MOVIE, _reader.IdleItems()[0].Name, "Wrong name of new item!");
@@ -71,7 +70,7 @@ namespace TorrentWatcher
 		{
 			File.WriteAllText (NEW_ITEM_FILE, NEW_MOVIE);
 			File.WriteAllText (NEW_ITEM_FILE_1, NEW_MOVIE);
-			_reader = new TargetReader (new MyConsole());
+			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 			_reader.ProcessQueue ();
 			File.Delete (NEW_ITEM_FILE);
 			File.Delete (NEW_ITEM_FILE_1);
@@ -85,7 +84,7 @@ namespace TorrentWatcher
 		{
 			DeleteTestDataFiles ();
 			File.WriteAllText (NEW_ITEM_FILE, NEW_MOVIE);
-			_reader = new TargetReader (new MyConsole());
+			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 			_reader.ProcessQueue ();
 			File.WriteAllText (NEW_ITEM_FILE, COMPLETED_MOVIE);
 			_reader.ProcessQueue ();
@@ -96,9 +95,7 @@ namespace TorrentWatcher
 
 		private void DeleteTestDataFiles()
 		{
-			if (File.Exists (QUEUE)) {
-				File.Delete (QUEUE);
-			}
+			File.Delete ("*.test");
 			if (File.Exists (NEW_ITEM_FILE)) {
 				File.Delete (NEW_ITEM_FILE);
 			}
@@ -112,25 +109,27 @@ namespace TorrentWatcher
 		{
 			File.WriteAllText (NEW_ITEM_FILE, NEW_MOVIE);
 			File.WriteAllText (NEW_ITEM_FILE_1, NEW_TV_SERIES);
-			_reader = new TargetReader (new MyConsole());
+			TargetReader _reader = new TargetReader (new MyConsole(), _file);
 			_reader.ProcessQueue ();
 			File.Delete (NEW_ITEM_FILE);
 			File.Delete (NEW_ITEM_FILE_1);
 			_reader.SaveIncompleted ();
 
 			XmlDocument doc = new XmlDocument ();
-			doc.Load (QUEUE);
+			doc.Load (_reader.Queue);
 			XmlNodeList nodes = doc.SelectNodes ("//TorrentTarget");
 
 			Assert.AreEqual(NEW_MOVIE, nodes[0].SelectSingleNode("Name").InnerText, "Wrong name of the first item!");
 			Assert.AreEqual(2, nodes.Count, "Wrong number of saved items!");
 		}
+		private string _file;
 
 		[Test()]
 		public void ProcessQueue_Reads_Items_Saved_Before()
 		{
+			_file=Path.GetRandomFileName()+".test";
 			SaveIncompleted_Saves_Items ();
-			_reader = new TargetReader (new MyConsole());
+			TargetReader _reader = new TargetReader (new MyConsole(), _file);
 			_reader.ReadQueue ();
 
 			Assert.AreEqual(NEW_MOVIE, _reader.IdleItems()[0].Name, "Wrong name of the first item!");
@@ -141,7 +140,7 @@ namespace TorrentWatcher
 		public void ProcessQueue_Doesnt_Throw_Exception_If_Queue_File_Is_Not_Existing()
 		{
 			DeleteTestDataFiles ();
-			_reader = new TargetReader (new MyConsole());
+			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 			_reader.ProcessQueue ();
 
 			Assert.AreEqual(0, _reader.IdleItems().Count, "Wrong number of saved items!");

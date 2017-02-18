@@ -119,10 +119,6 @@ namespace TorrentWatcher
 			CreateSimpleSample ();
 			_publisher.Publish ("Мумия", new List<string> () { "testlink3" });
 
-			CQ doc1 = CQ.CreateFromFile (OUTPUT_HTML);
-			string h = doc1.Select ("h2:contains(Мумия)").RenderSelection ();
-			string h1 = doc1.Select ("h2:contains(Мумия)").Filter(x=>x.InnerText=="Мумия").RenderSelection ();
-
 			_publisher.Hide ("Мумия");
 
 			CQ doc = CQ.CreateFromFile (OUTPUT_HTML);
@@ -139,10 +135,22 @@ namespace TorrentWatcher
 			_publisher.Publish ("Мумия", new List<string> () { "testlink3" });
 
 			CQ doc = CQ.CreateFromFile (OUTPUT_HTML);
-			string t0=doc.Select ("h2:contains(Мумия)").RenderSelection ();
-			string t = doc.Select ("h2:contains(Мумия)").Filter (x => HttpUtility.HtmlDecode(x.InnerText) == "Мумия").RenderSelection ();
 
 			Assert.AreEqual (1, doc.Select ("h2:contains(Мумия)").Filter(x=>HttpUtility.HtmlDecode(x.InnerText)=="Мумия").Length, "Missed title!");
+		}
+
+		[Test()]
+		public void HideAllLinks_Hides_Links_For_Every_Title()
+		{
+			DeleteTestFiles ();
+			CreateSimpleSample ();
+			_publisher.Publish ("Мумия", new List<string> () { "testlink3" });
+			_publisher.HideAllLinks ();
+
+			CQ doc = CQ.CreateFromFile (OUTPUT_HTML);
+
+			Assert.AreEqual (2, doc.Select ("h2").Length, "Missed title!");
+			Assert.AreEqual (0, doc.Select ("li").Length, "Extra links!");
 		}
 	}
 }

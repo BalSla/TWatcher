@@ -15,6 +15,17 @@ namespace TorrentWatcher
 
 		#region IPublisher implementation
 
+		public void HideAllLinks()
+		{
+			lock (writeLocker) {
+				if (File.Exists (_targetFile)) {
+					CQ doc = CQ.CreateFromFile (_targetFile);
+					doc.Select ("h2").Next ().Remove().Render();
+					doc.Save (_targetFile, DomRenderingOptions.Default);
+				}
+			}
+		}
+
 		public void Remove (string title)
 		{
 			lock (writeLocker) {

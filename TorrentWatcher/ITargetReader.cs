@@ -19,6 +19,7 @@ namespace TorrentWatcher
 		/// </summary>
 		void ProcessQueue ();
 		int AddedItems{ get; }
+		string Queue { get;}
 	}
 }
 

@@ -22,6 +22,11 @@ namespace TorrentWatcher.Helpers
 			}
 			return "";
 		}
+
+		public static bool KeyExists (this List<string> args, string key)
+		{
+			return !string.IsNullOrEmpty (args.Find (x => x.StartsWith ("/" + key)));
+		}
 	}
 }
 

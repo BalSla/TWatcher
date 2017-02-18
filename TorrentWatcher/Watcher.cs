@@ -20,14 +20,12 @@ namespace TorrentWatcher
 		private int _linksFoundCount;
 		private IPublisher _publisher;
 
-		public Watcher (MyConsole console, ITargetReader reader)
+		public Watcher (MyConsole console, ITargetReader reader, bool debug)
 		{
 			_console = console;
 			_reader = reader;
-			_console.DebugOn = true;
+			_console.DebugOn = debug;
 			_publisher = new HtmlLinkPublisher ("links.html");
-			_console.Write ("Torrent trecker started.");
-			_console.Debug ("Debug mode is on.");
 		}
 
 		public void Remove (string remove)
@@ -35,6 +33,11 @@ namespace TorrentWatcher
 			File.WriteAllText (Path.GetRandomFileName()+".txt" ,string.Format("Completed:{0}",remove));
 			_console.Write ("Created ticket to delete [{0}].", remove);
 			_publisher.Remove (remove);
+		}
+
+		public void HideAllLinks ()
+		{
+			_publisher.HideAllLinks ();
 		}
 
 		public void Hide (string hide)
@@ -125,6 +128,7 @@ namespace TorrentWatcher
 		public void Start ()
 		{
 			_console.Write ("Starting TorrentWatcher...");
+			_console.Debug ("Debug mode is on.");
 			IParser krutor = new KrutorParser ();
 			_parserManager = new ParsersManager (krutor);
 			//TODO: implement Kinozal.tv parser

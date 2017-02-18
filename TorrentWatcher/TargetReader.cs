@@ -8,15 +8,19 @@ namespace TorrentWatcher
 {
 	public class TargetReader : ITargetReader
 	{
-		private  const string QUEUE="queue.xml";
 		private int _addedItems;
+		private string _queue;
+
+		public string Queue {
+			get { return _queue;}
+		}
 
 		#region ITargetReader implementation
 
 		public void SaveIncompleted ()
 		{
 			XmlSerializer serializer = new XmlSerializer (typeof(List<TorrentTarget>));
-			using (TextWriter writer = new StreamWriter(QUEUE)) {
+			using (TextWriter writer = new StreamWriter(_queue)) {
 				serializer.Serialize (writer, _targets);
 				_console.Debug ("Waiting list has been saved.");
 			}
@@ -46,9 +50,9 @@ namespace TorrentWatcher
 		public void ReadQueue(){
 			if (_targets == null) {
 				_console.Write ("Reading watching list...");
-				if (File.Exists (QUEUE)) {
+				if (File.Exists (_queue)) {
 					XmlSerializer deserializer = new XmlSerializer (typeof(List<TorrentTarget>));
-					using (TextReader reader = new StreamReader(QUEUE)) {
+					using (TextReader reader = new StreamReader(_queue)) {
 						_targets = (List<TorrentTarget>)deserializer.Deserialize (reader);
 					}
 				} else {
@@ -126,9 +130,11 @@ namespace TorrentWatcher
 		private MyConsole _console;
 		private List<TorrentTarget > _targets;
 
-		public TargetReader(MyConsole console)
+		public TargetReader(MyConsole console, string queuePath)
 		{
 			_console = console;
+			_queue = queuePath;
+			_console.Debug ("Queue file is [{0}]", queuePath);
 		}
 	}
 }
