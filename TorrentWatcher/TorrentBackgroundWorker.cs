@@ -34,6 +34,7 @@ namespace TorrentWatcher
 
 			foreach (string item in _parser.FindLinks(_torrent.Name, _torrent.SearchCondition)) {
 				if (CancellationPending) {
+					_console.Debug ("Self canceling ({0})...", this._torrent.Name);
 					break;
 				}
 				if (_torrent.Discovered.AddUnique (item)) {

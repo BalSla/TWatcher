@@ -29,7 +29,7 @@ namespace TorrentWatcher
 			Assert.AreEqual (2, target.Discovered.Count, "Wrong nuber of serialized items!");
 			Assert.AreEqual ("test2", target.Discovered [1], "Wrong content of Discovered!");
 		}
-		private const string QUEUE = "queue.xml";
+		private const string QUEUE = "queue.test.xml";
 		private void DeleteTestDataFiles()
 		{
 			if (File.Exists (QUEUE)) {

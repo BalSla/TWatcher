@@ -79,6 +79,8 @@
     <Compile Include="IPublisher.cs" />
     <Compile Include="HtmlLinkPublisher.cs" />
     <Compile Include="Tests\HtmlLinkPublisherTests.cs" />
+    <Compile Include="Tests\KinozalParserTests.cs" />
+    <Compile Include="Parsers\KinozalParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

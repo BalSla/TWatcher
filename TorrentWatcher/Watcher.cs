@@ -19,6 +19,7 @@ namespace TorrentWatcher
 		private ITargetReader _reader;
 		private int _linksFoundCount;
 		private IPublisher _publisher;
+		private bool _canceling;
 
 		public Watcher (MyConsole console, ITargetReader reader, bool debug)
 		{
@@ -76,6 +77,7 @@ namespace TorrentWatcher
 
 		void ConsoleReader_WorkCompleted ()
 		{
+			_canceling = true;
 			_console.Write ("Canceling work...");
 			_console.Debug ("Console reader state(0) is busy={0}", _consoleReader.IsBusy);
 			// stop _workers
@@ -130,19 +132,18 @@ namespace TorrentWatcher
 			_console.Write ("Starting TorrentWatcher...");
 			_console.Debug ("Debug mode is on.");
 			IParser krutor = new KrutorParser ();
-			_parserManager = new ParsersManager (krutor);
-			//TODO: implement Kinozal.tv parser
+			IParser kinozal = new KinozalParser ();
+			_parserManager = new ParsersManager (krutor,kinozal);
 			//TODO: implement lostfilm.tv parser
 			_console.Debug ("Watcher started");
 			_consoleReader.WorkerSupportsCancellation = true;
 			_consoleReader.DoWork += new DoWorkEventHandler (ConsoleReader_DoWork);
-			//_consoleReader.RunWorkerCompleted += new RunWorkerCompletedEventHandler (ConsoleReader_WorkCompleted);
 			_consoleReader.RunWorkerAsync ();
 
 			RenewQueue ();
 
 			System.Timers.Timer tim = new System.Timers.Timer ();
-			tim.Interval = 60000;
+			tim.Interval = 600000;
 			tim.AutoReset = true;
 			tim.Elapsed += new ElapsedEventHandler (RenewQueueAndStartProcess);
 			tim.Start ();
@@ -154,17 +155,19 @@ namespace TorrentWatcher
 
 		void RenewQueue ()
 		{
-			_reader.ProcessQueue ();
-			// create and start watcher for each item
-			foreach (TorrentTarget idleItem in _reader.IdleItems()) {
-				if (_workers.Find(x=>x.Name==idleItem.Name)==null) {
-					TorrentBackgroundWorker newWorker = AddWatch (idleItem);
-					_workers.Add (newWorker);
-					_console.Debug ("Watcher [{0}] added to queue.", newWorker.Name);
+			if (!_canceling) {
+				_reader.ProcessQueue ();
+				// create and start watcher for each item
+				foreach (TorrentTarget idleItem in _reader.IdleItems()) {
+					if (_workers.Find (x => x.Name == idleItem.Name) == null) {
+						TorrentBackgroundWorker newWorker = AddWatch (idleItem);
+						_workers.Add (newWorker);
+						_console.Debug ("Watcher [{0}] added to queue.", newWorker.Name);
+					}
 				}
-			}
-			foreach (var item in _workers) {
-				item.RunWorkerAsync ();
+				foreach (var item in _workers) {
+					item.RunWorkerAsync ();
+				}
 			}
 		}
 
