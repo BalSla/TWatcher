@@ -86,14 +86,25 @@ namespace TorrentWatcher
 				item.CancelAsync ();
 			}
 			bool allStopped = false;
+		int stopCounter = 0;
 			while (!allStopped) {
 				allStopped = true;
 				foreach (var item in _workers) {
 					if (item.IsBusy) {
 						_console.Debug ("[{0}] still active...", item.Name);
+						if (stopCounter==10) {
+							_console.Debug ("Stopping [{0}]...", item.Name);
+							item.CancelAsync ();
+					}
+						if (stopCounter==20) {
+							_console.Write ("Unfinished watchers. Exiting...");
+							allStopped = true;
+							break;
+						}
 						allStopped=false;
 					}
 				}
+				stopCounter++;
 				_console.Debug ("Console reader state(1) is busy={0}", _consoleReader.IsBusy);
 				_console.Debug ("allStopped={0}", allStopped);
 				Thread.Sleep (6000);
