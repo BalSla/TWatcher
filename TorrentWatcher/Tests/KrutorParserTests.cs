@@ -10,11 +10,21 @@ namespace TorrentWatcher
 	public class KrutorParserTests
 	{
 		[Test()]
-		public void FindLinks_Returns_At_Least_One ()
+		public void FindLinks_Returns_At_Least_One_Movie ()
 		{
 			KrutorParser parser = new KrutorParser ();
 
 			IList<string> links = parser.FindLinks ("Пассажиры", SearchCondition.Movie);
+
+			Assert.IsTrue (links.Count > 0);
+		}
+
+		[Test()]
+		public void FindLinks_Returns_At_Least_One_TVSeries ()
+		{
+			KrutorParser parser = new KrutorParser ();
+
+			IList<string> links = parser.FindLinks ("Big Little Lies", SearchCondition.TvSeries);
 
 			Assert.IsTrue (links.Count > 0);
 		}

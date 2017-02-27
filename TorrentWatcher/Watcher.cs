@@ -146,6 +146,7 @@ namespace TorrentWatcher
 			IParser kinozal = new KinozalParser ();
 			_parserManager = new ParsersManager (krutor,kinozal);
 			//TODO: implement lostfilm.tv parser
+			//TODO: Implement rgfootball.net parser
 			_console.Debug ("Watcher started");
 			_consoleReader.WorkerSupportsCancellation = true;
 			_consoleReader.DoWork += new DoWorkEventHandler (ConsoleReader_DoWork);
