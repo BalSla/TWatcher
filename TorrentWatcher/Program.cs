@@ -63,8 +63,6 @@ WHERE:
 ");
 				Environment.Exit (0);
 			}
-			//TODO: Exact match while searching (parse title in parsers. Check in translated and original title)
-			//TODO: Start Browser if any torrent found
 			//TODO: Command to watch for next series
 			//TODO: Possibility to add comment (add coment on links page as well)
 			//TODO: Possibility toadd date tostart search from

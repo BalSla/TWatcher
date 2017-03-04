@@ -12,7 +12,7 @@ namespace TorrentWatcher
 		public static bool Matches (string innerText, string etalon)
 		{
 			string decoded = HttpUtility.HtmlDecode (innerText);
-			string[] titles = decoded.Split (new char[] { '/' }, 2);
+			string[] titles = decoded.Split (new char[] { '/' });
 			string match = titles.FirstOrDefault (x => x.Trim () == etalon);
 			return !String.IsNullOrEmpty (match);
 		}
@@ -26,7 +26,7 @@ namespace TorrentWatcher
 			List<string> torrents = new List<string> ();
 			string test = pageData.Document.Body.InnerHTML;
 			foreach (CsQuery.Implementation.HtmlAnchorElement item in pageData.Select("table[class='t_peer w100p']").Find("a")) {
-				if (item.Href.StartsWith ("/details") /*&& Matches(item.InnerText, searchString)*/) {
+				if (item.Href.StartsWith ("/details") && Matches(item.InnerText, searchString)) {
 					torrents.Add ("http://kinozal.tv"+item.Href);
 				}
 			}

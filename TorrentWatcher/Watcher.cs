@@ -92,11 +92,11 @@ namespace TorrentWatcher
 				foreach (var item in _workers) {
 					if (item.IsBusy) {
 						_console.Debug ("[{0}] still active...", item.Name);
-						if (stopCounter==10) {
+						if (stopCounter==3) {
 							_console.Debug ("Stopping [{0}]...", item.Name);
 							item.CancelAsync ();
 					}
-						if (stopCounter==20) {
+						if (stopCounter==6) {
 							_console.Write ("Unfinished watchers. Exiting...");
 							allStopped = true;
 							break;
@@ -112,6 +112,9 @@ namespace TorrentWatcher
 			_reader.SaveIncompleted ();
 			_console.Write ("Work finished.");
 			PublishStatistics ();
+			if (_linksFoundCount!=0) {
+				Process.Start ("links.html");
+			}
 		}
 
 		void TorrentBackgroundWorker_DoWork (object sender, DoWorkEventArgs e)
