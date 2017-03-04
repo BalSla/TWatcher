@@ -53,6 +53,7 @@
     <Reference Include="Moq">
       <HintPath>..\packages\Moq.4.5.30\lib\net45\Moq.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />

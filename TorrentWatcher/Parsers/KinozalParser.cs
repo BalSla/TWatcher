@@ -3,11 +3,20 @@ using TorrentWatcher.Parsers;
 using System.Web;
 using CsQuery;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TorrentWatcher
 {
 	public class KinozalParser : IParser
 	{
+		public static bool Matches (string innerText, string etalon)
+		{
+			string decoded = HttpUtility.HtmlDecode (innerText);
+			string[] titles = decoded.Split (new char[] { '/' }, 2);
+			string match = titles.FirstOrDefault (x => x.Trim () == etalon);
+			return !String.IsNullOrEmpty (match);
+		}
+
 		#region IParser implementation
 
 		public System.Collections.Generic.IList<string> FindLinks (string searchString, SearchCondition condition)
@@ -17,7 +26,7 @@ namespace TorrentWatcher
 			List<string> torrents = new List<string> ();
 			string test = pageData.Document.Body.InnerHTML;
 			foreach (CsQuery.Implementation.HtmlAnchorElement item in pageData.Select("table[class='t_peer w100p']").Find("a")) {
-				if (item.Href.StartsWith ("/details")) {
+				if (item.Href.StartsWith ("/details") /*&& Matches(item.InnerText, searchString)*/) {
 					torrents.Add ("http://kinozal.tv"+item.Href);
 				}
 			}
