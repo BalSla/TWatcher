@@ -6,6 +6,14 @@ namespace TorrentWatcher
 	public interface ITargetReader
 	{
 		/// <summary>
+		/// Items removed in current session
+		/// </summary>
+		/// <value>The removed items.</value>
+		int RemovedItems {
+			get;
+		}
+
+		/// <summary>
 		/// Saves the incompleted TorrentTarget items.
 		/// </summary>
 		void SaveIncompleted ();

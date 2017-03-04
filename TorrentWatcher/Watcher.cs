@@ -71,7 +71,7 @@ namespace TorrentWatcher
 		{
 			_console.Write("SESSION STATISTICS:");
 			_console.Write ("  {0} item(s) added to watching list", _reader.AddedItems);
-			_console.Write ("  {0} item(s) removed from watching list", _reader.AddedItems);
+			_console.Write ("  {0} item(s) removed from watching list", _reader.RemovedItems);
 			_console.Write ("  {0} link(s) found", _linksFoundCount);
 		}
 

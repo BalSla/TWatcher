@@ -17,6 +17,14 @@ namespace TorrentWatcher
 
 		#region ITargetReader implementation
 
+		public int RemovedItems {
+			get {
+				return _removedItems;
+			}
+		}
+
+		private int _removedItems;
+
 		public void SaveIncompleted ()
 		{
 			XmlSerializer serializer = new XmlSerializer (typeof(List<TorrentTarget>));
@@ -37,6 +45,7 @@ namespace TorrentWatcher
 			TorrentTarget target = _targets.Find (x => x.Name == str);
 			if (target!=null) {
 				_targets.Remove (target);
+				_removedItems++;
 				_console.Write ("Item [{0}] removed from watching list.", target.Name);
 			}
 		}
@@ -58,7 +67,7 @@ namespace TorrentWatcher
 				} else {
 					_targets = new List<TorrentTarget> ();
 				}
-				_console.Write ("Red {0} watched items.", _targets.Count);
+				_console.Write ("Read {0} watched items.", _targets.Count);
 			}
 		}
 
