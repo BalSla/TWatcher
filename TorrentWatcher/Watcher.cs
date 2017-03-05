@@ -48,7 +48,18 @@ namespace TorrentWatcher
 
 		public void Add (string item, string category)
 		{
-			File.WriteAllText (Path.GetRandomFileName()+".txt" ,item);
+			string context = item;
+			switch(category){
+			case "tvseries":
+				context = string.Format ("TVS[{0}]", item);
+					break;
+			case "movie":
+				break;
+			default:
+				throw new NotImplementedException (string.Format("Ctaegory [{0}] is not supported yet!", category));
+		}
+
+			File.WriteAllText (Path.GetRandomFileName()+".txt" ,context);
 			_console.Write ("Created ticket for [{0}] ({1}).", item, category);
 		}
 
@@ -147,7 +158,8 @@ namespace TorrentWatcher
 			_console.Debug ("Debug mode is on.");
 			IParser krutor = new KrutorParser ();
 			IParser kinozal = new KinozalParser ();
-			_parserManager = new ParsersManager (krutor,kinozal);
+			IParser lostfilm = new LostFilmParser ();
+			_parserManager = new ParsersManager (krutor,kinozal,lostfilm);
 			//TODO: implement lostfilm.tv parser
 			//TODO: Implement rgfootball.net parser
 			_console.Debug ("Watcher started");

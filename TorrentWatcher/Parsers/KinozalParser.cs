@@ -19,7 +19,7 @@ namespace TorrentWatcher
 
 		#region IParser implementation
 
-		public System.Collections.Generic.IList<string> FindLinks (string searchString, SearchCondition condition)
+		public IList<string> FindLinks (string searchString, SearchCondition condition)
 		{
 			string encUrl = HttpUtility.UrlPathEncode (string.Format ("http://kinozal.tv/browse.php?s={0}&g=0&c=1002&v=0&d=0&w=0&t=0&f=0", searchString));
 			CQ pageData = CQ.CreateFromUrl(encUrl);

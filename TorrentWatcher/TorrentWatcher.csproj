@@ -83,6 +83,8 @@
     <Compile Include="Tests\KinozalParserTests.cs" />
     <Compile Include="Parsers\KinozalParser.cs" />
     <Compile Include="Tests\Debug.cs" />
+    <Compile Include="Parsers\LostFilmParser.cs" />
+    <Compile Include="Tests\LostFilmParserTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

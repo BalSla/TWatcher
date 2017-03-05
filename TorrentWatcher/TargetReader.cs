@@ -104,10 +104,8 @@ namespace TorrentWatcher
 						AddTarget(newTarget);
 					}
 				}else if (content.StartsWith ("TVS[")) {
-					string name = ExctractName (content);
-					int season = ExctractSeason(content);
-					int episode = ExctractEpisode(content);
-					TorrentTarget newTarget = new TorrentTarget (name, SearchCondition.TvSeries, season, episode);
+					string name = content.Replace("TVS[", "").Replace("]","");
+					TorrentTarget newTarget = new TorrentTarget (name, SearchCondition.TvSeries);
 					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
 						AddTarget(newTarget);
 					}
