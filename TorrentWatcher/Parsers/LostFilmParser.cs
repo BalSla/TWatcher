@@ -22,12 +22,12 @@ namespace TorrentWatcher
 				foreach (CsQuery.Implementation.DomElement item in series.Select("td[onclick]")) {
 					string h = item.GetAttribute ("onclick").ToString ();
 					if (!h.Contains ("/comments")) {
-						torrents.AddUnique (string.Format ("http://lostfilm.tv{0}", h.Replace ("goTo('", "").Replace ("',false", "")));
+						torrents.AddUnique (string.Format ("http://lostfilm.tv{0}", h.Replace ("goTo('", "").Replace ("',false)", "")));
 					}
 				}
 				foreach (CsQuery.Implementation.DomElement item in series.Select("tr[class='not-available'] td[onclick]")) {
 					string h = item.GetAttribute ("onclick").ToString ();
-					torrents.Remove (string.Format ("http://lostfilm.tv{0}", h.Replace ("goTo('", "").Replace ("',false", "")));
+					torrents.Remove (string.Format ("http://lostfilm.tv{0}", h.Replace ("goTo('", "").Replace ("',false)", "")));
 				}
 			}
 			return torrents;

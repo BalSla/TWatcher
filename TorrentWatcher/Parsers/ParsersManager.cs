@@ -11,7 +11,10 @@ namespace TorrentWatcher.Parsers
 		{
 		List<string> list = new List<string> ();
 			foreach (IParser item in _parsers) {
-				list.AddRange(item.FindLinks (searchString, condition));
+				try {
+					list.AddRange (item.FindLinks (searchString, condition));
+				} catch {
+				}
 			}
 			return list;
 		}

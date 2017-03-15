@@ -20,13 +20,15 @@ namespace TorrentWatcher
 		private int _linksFoundCount;
 		private IPublisher _publisher;
 		private bool _canceling;
+		private bool _singleCycle;
 
-		public Watcher (MyConsole console, ITargetReader reader, bool debug)
+		public Watcher (MyConsole console, ITargetReader reader, bool debug, bool singleCycle)
 		{
 			_console = console;
 			_reader = reader;
 			_console.DebugOn = debug;
 			_publisher = new HtmlLinkPublisher ("links.html");
+			_singleCycle = singleCycle;
 		}
 
 		public void Remove (string remove)
@@ -70,7 +72,7 @@ namespace TorrentWatcher
 		{
 			while (true) {
 				ConsoleKeyInfo key = Console.ReadKey ();
-				if (key.Key==ConsoleKey.C)
+				if (key.Key==ConsoleKey.C | _consoleReader.CancellationPending)
 				{ 
 					ConsoleReader_WorkCompleted ();
 					return;
@@ -133,6 +135,8 @@ namespace TorrentWatcher
 			((TorrentBackgroundWorker)sender).DoPersonalWork (e);
 		}
 
+		private int _activeWatchersCounter=0;
+
 		void TorrentBackgroundWorker_WorkCompleted (object sender, RunWorkerCompletedEventArgs e)
 		{
 			ITorrentBackgroundWorker worker = (ITorrentBackgroundWorker)sender;
@@ -140,6 +144,11 @@ namespace TorrentWatcher
 			_linksFoundCount += worker.NewLinks.Count;
 			_console.Debug ("Torrent watcher [{0}] has completed work.", worker.Name);
 			_console.Debug ("   found {0} torrent(s).", worker.NewLinks.Count);
+			_activeWatchersCounter--;
+
+			if (_singleCycle && _activeWatchersCounter==0) {
+				_consoleReader.CancelAsync ();
+			}
 		}
 
 		TorrentBackgroundWorker AddWatch (TorrentTarget idleItem)
@@ -160,7 +169,6 @@ namespace TorrentWatcher
 			IParser kinozal = new KinozalParser ();
 			IParser lostfilm = new LostFilmParser ();
 			_parserManager = new ParsersManager (krutor,kinozal,lostfilm);
-			//TODO: implement lostfilm.tv parser
 			//TODO: Implement rgfootball.net parser
 			_console.Debug ("Watcher started");
 			_consoleReader.WorkerSupportsCancellation = true;
@@ -182,6 +190,7 @@ namespace TorrentWatcher
 
 		void RenewQueue ()
 		{
+			_activeWatchersCounter = 0;
 			if (!_canceling) {
 				_reader.ProcessQueue ();
 				// create and start watcher for each item
@@ -190,6 +199,7 @@ namespace TorrentWatcher
 						TorrentBackgroundWorker newWorker = AddWatch (idleItem);
 						_workers.Add (newWorker);
 						_console.Debug ("Watcher [{0}] added to queue.", newWorker.Name);
+						_activeWatchersCounter++;
 					}
 				}
 				foreach (var item in _workers) {
