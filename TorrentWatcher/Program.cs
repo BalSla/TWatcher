@@ -17,7 +17,7 @@ namespace TorrentWatcher
 			string category = arguments.KeyValue("category");
 			string remove = arguments.KeyValue ("remove");
 			string hide = arguments.KeyValue ("hide");
-			bool debug = arguments.KeyExists ("debug");
+			bool debug = !arguments.KeyExists ("nodebug");
 			bool hideall = arguments.KeyExists ("hideall");
 			bool watch = arguments.KeyExists ("watch");
 			bool singleCycle = arguments.KeyExists ("single");
@@ -58,7 +58,7 @@ WHERE:
      remove   - remove watcher
      hide     - hide links from published link for specified watcher
      hideall  - hide all links from published link for all watchers
-     debug    - print debug messages
+     nodebug  - do not print debug messages
      TITLE    - movie title. If contains spaces then should be quoted.
      category - category of watcher (by default - movie)
      single   - end watching after one cycle
