@@ -24,6 +24,9 @@ namespace TorrentWatcher.Parsers
 			case SearchCondition.RussianMovie:
 				conditionFlag = "2";
 				break;
+			case SearchCondition.Sport:
+				conditionFlag = "11";
+				break;
 			case SearchCondition.Documental:
 				conditionFlag = "3";
 				break;

@@ -12,7 +12,7 @@ namespace TorrentWatcher
 		{
 			LostFilmParser parser = new LostFilmParser ();
 
-			IList<string> links = parser.FindLinks ("Elementary", SearchCondition.TvSeries);
+			IList<string> links = parser.FindLinks ("Billions", SearchCondition.TvSeries);
 
 			Assert.IsTrue (links.Count > 0);
 		}

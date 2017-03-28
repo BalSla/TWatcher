@@ -71,12 +71,25 @@ namespace TorrentWatcher
 			DeleteTestFiles ();
 			CreateSimpleSample ();
 
-			_publisher.Publish ("Title1", new List<string> () { "testlink4" });
+			//_publisher.Publish ("Title1", new List<string> () { "testlink4" });
 			_publisher.Publish ("Title", new List<string> () { "testlink3" });
 			CQ doc = CQ.CreateFromFile (OUTPUT_HTML);
 					
-			Assert.AreEqual (1, doc["h2:contains(Title)"].Filter(x=>x.InnerText=="Title").Length, "Extra Title has been added!");
+			//Assert.AreEqual (1, doc["h2:contains(Title)"].Filter(x=>x.InnerText=="Title").Length, "Extra Title has been added!");
 			Assert.AreEqual (1, doc.Select("h2:contains(Title)").Filter(x=>x.InnerText=="Title").Next().Select("li:contains(testlink3)").Length, "Output doesn't contain 3-st link!");
+		}
+
+		[Test()]
+		public void Publish_Append_New_Singel_Only_Link_To_Existing_Title ()
+		{
+			DeleteTestFiles ();
+			CreateSimpleSample ();
+
+			_publisher.Hide("Title");
+			_publisher.Publish ("Title", new List<string> () { "testlink4a" });
+			CQ doc = CQ.CreateFromFile (OUTPUT_HTML);
+
+			Assert.AreEqual (1, doc.Select("h2").Filter(x=>x.InnerText=="Title").Next().Select("li:contains(testlink4a)").Length, "Output doesn't contain expected link!");
 		}
 
 		[Test()]

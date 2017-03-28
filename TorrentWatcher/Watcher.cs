@@ -57,6 +57,9 @@ namespace TorrentWatcher
 					break;
 			case "movie":
 				break;
+			case "sport":
+				context = string.Format ("Sport[{0}]", item);
+				break;
 			default:
 				throw new NotImplementedException (string.Format("Ctaegory [{0}] is not supported yet!", category));
 		}

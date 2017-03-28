@@ -109,6 +109,12 @@ namespace TorrentWatcher
 					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
 						AddTarget(newTarget);
 					}
+				}else if (content.StartsWith ("Sport[")) {
+					string name = content.Replace("Sport[", "").Replace("]","");
+					TorrentTarget newTarget = new TorrentTarget (name, SearchCondition.Sport);
+					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
+						AddTarget(newTarget);
+					}
 				} else {
 					TorrentTarget newTarget = new TorrentTarget (content, SearchCondition.Movie);
 					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {

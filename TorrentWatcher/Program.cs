@@ -50,7 +50,7 @@ namespace TorrentWatcher
 				}
 			} else {
 				console.Write (@"USAGE:
-TorrentWatcher.exe [/COMMAND:TITLE[/category:movie/tvseries/book]][/debug][/single]
+TorrentWatcher.exe [/COMMAND:TITLE[/category:movie/tvseries/book/sport]][/debug][/single]
 WHERE:
   COMMAND:
      watch    - start watching

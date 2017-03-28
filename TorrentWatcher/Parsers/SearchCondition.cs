@@ -9,6 +9,7 @@ namespace TorrentWatcher
 		Documental,
 		TvSeries,
 		Book,
+		Sport,
 	}
 }
 

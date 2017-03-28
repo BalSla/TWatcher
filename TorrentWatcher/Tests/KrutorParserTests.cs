@@ -20,6 +20,16 @@ namespace TorrentWatcher
 		}
 
 		[Test()]
+		public void FindLinks_Returns_At_Least_One_Sport ()
+		{
+			KrutorParser parser = new KrutorParser ();
+
+			IList<string> links = parser.FindLinks ("Формула 1", SearchCondition.Sport);
+
+			Assert.IsTrue (links.Count > 0);
+		}
+
+		[Test()]
 		public void FindLinks_Returns_At_Least_One_TVSeries ()
 		{
 			KrutorParser parser = new KrutorParser ();

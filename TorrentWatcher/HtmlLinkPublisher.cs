@@ -67,9 +67,13 @@ namespace TorrentWatcher
 						doc = CQ.CreateFromFile (_targetFile);
 					}
 					CQ fragment;
-					if (doc.Select (string.Format ("h2:contains({0})", title)).Length != 0) {
+					if (doc.Select ("h2").Filter(x=>x.InnerText==title).Length != 0) {
+						if (doc.Select("h2").Filter(x=>x.InnerText==title).Children().Length==0) {
+							fragment = CQ.CreateFragment (string.Format ("<ul>{0}</ul>", UnsortedListOfLinks (links)));
+							doc.Select ("h2").Filter (x => x.InnerText == title).After (fragment).Render ();
+						}
 						fragment = CQ.CreateFragment (UnsortedListOfLinks (links));
-						doc.Select (string.Format ("h2:contains({0})", title)).Next ().Children ().Last ().After (fragment).Render ();
+						doc.Select ("h2").Filter(x=>x.InnerText==title).Children ().Last ().After (fragment).Render ();
 					} else {
 						fragment = CQ.CreateFragment (string.Format ("<H2>{0}</H2><ul>{1}</ul>", title, UnsortedListOfLinks (links)));
 						doc.Select ("#header").After (fragment).Render ();
