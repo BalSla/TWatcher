@@ -12,6 +12,9 @@ namespace TorrentWatcher
 			TargetReader reader = new TargetReader (console, "queue.xml");
 			List<string> arguments = new List<string> ();
 			arguments.AddRange (args);
+			console.Write ("TorrentWatcher 2017");
+			string argsLine = String.Concat (args);
+			console.Write ("Current command:{0}", argsLine);
 
 			string item=arguments.KeyValue("add");
 			string category = arguments.KeyValue("category");
@@ -20,6 +23,8 @@ namespace TorrentWatcher
 			bool debug = !arguments.KeyExists ("nodebug");
 			bool hideall = arguments.KeyExists ("hideall");
 			bool watch = arguments.KeyExists ("watch");
+
+			//TODO: Remove single cycle do it by default
 			bool singleCycle = arguments.KeyExists ("single");
 
 			Watcher watcher = new Watcher (console, reader, debug, singleCycle);
@@ -42,8 +47,7 @@ namespace TorrentWatcher
 			} else if(watch) {
 				try
 				{
-					watcher.Start ();
-					Environment.Exit(0);
+					Environment.Exit(watcher.Start ());
 				}
 				catch (Exception ex) {
 					console.Write ("Unhandled exception:\r\n{0}", ex);

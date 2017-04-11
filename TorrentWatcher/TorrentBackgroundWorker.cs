@@ -31,8 +31,8 @@ namespace TorrentWatcher
 		public void DoPersonalWork (DoWorkEventArgs e){
 			_console.Debug ("Analyzing query [{0}]...", _torrent.Name);
 			_newLinks.Clear ();
-
-			foreach (string item in _parser.FindLinks(_torrent.Name, _torrent.SearchCondition)) {
+			IList<string> links=_parser.FindLinks(_torrent.Name, _torrent.SearchCondition);
+			foreach (string item in links) {
 				if (CancellationPending) {
 					_console.Debug ("Self canceling ({0})...", this._torrent.Name);
 					break;

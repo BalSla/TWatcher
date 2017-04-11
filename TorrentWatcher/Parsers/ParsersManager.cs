@@ -14,17 +14,18 @@ namespace TorrentWatcher.Parsers
 				try {
 					list.AddRange (item.FindLinks (searchString, condition));
 				} catch (Exception ex){
-					string m = ex.Message;
+					_console.Write (string.Format ("Error: {1}", ex.Message));
 				}
 			}
 			return list;
 		}
 
 		#endregion
-
+		private MyConsole _console;
 		private List<IParser> _parsers = new List<IParser> ();
-		public ParsersManager (params IParser[] args)
+		public ParsersManager (MyConsole console, params IParser[] args)
 		{
+			_console = console;
 			_parsers.AddRange (args);
 		}
 	}

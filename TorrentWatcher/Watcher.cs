@@ -128,9 +128,6 @@ namespace TorrentWatcher
 			_reader.SaveIncompleted ();
 			_console.Write ("Work finished.");
 			PublishStatistics ();
-			if (_linksFoundCount!=0) {
-				Process.Start ("links.html");
-			}
 		}
 
 		void TorrentBackgroundWorker_DoWork (object sender, DoWorkEventArgs e)
@@ -164,14 +161,14 @@ namespace TorrentWatcher
 
 		IParsersManager _parserManager;
 
-		public void Start ()
+		public int Start ()
 		{
 			_console.Write ("Starting TorrentWatcher...");
 			_console.Debug ("Debug mode is on.");
 			IParser krutor = new KrutorParser ();
 			IParser kinozal = new KinozalParser ();
 			IParser lostfilm = new LostFilmParser ();
-			_parserManager = new ParsersManager (krutor,kinozal,lostfilm);
+			_parserManager = new ParsersManager (_console, krutor,kinozal,lostfilm);
 			//TODO: Implement rgfootball.net parser
 			_console.Debug ("Watcher started");
 			_consoleReader.WorkerSupportsCancellation = true;
@@ -189,6 +186,7 @@ namespace TorrentWatcher
 			while (_consoleReader.IsBusy) {
 				Thread.Sleep (1000);
 			}
+			return _linksFoundCount == 0 ? 0 : 2;
 		}
 
 		void RenewQueue ()
