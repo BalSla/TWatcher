@@ -15,7 +15,7 @@ namespace TorrentWatcher
 		{
 			List<string> torrents = new List<string> ();
 			if (condition == SearchCondition.TvSeries) {
-				string encUrl = HttpUtility.UrlPathEncode (string.Format ("http://www.lostfilm.tv/series/{0}", searchString));
+				string encUrl = HttpUtility.UrlPathEncode (string.Format ("http://www.lostfilm.tv/series/{0}", searchString.Replace(" ", "_")));
 				CQ pageData = CQ.CreateFromUrl (encUrl);
 				string test = pageData.Document.Body.InnerHTML;
 				CQ series = pageData.Select ("table[class='movie-parts-list']");
@@ -38,6 +38,7 @@ namespace TorrentWatcher
 		public LostFilmParser ()
 		{
 		}
+
 	}
 }
 

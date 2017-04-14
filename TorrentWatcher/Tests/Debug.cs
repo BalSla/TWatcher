@@ -9,7 +9,7 @@ namespace TorrentWatcher
 		[Test]
 		public void WatchDebug()
 		{
-			MainClass.Main(new string[] {"/watch"});
+			//MainClass.Main(new string[] {"/watch"});
 		}
 	}
 }

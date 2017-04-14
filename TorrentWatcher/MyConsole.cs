@@ -30,6 +30,7 @@ namespace TorrentWatcher
 		public void Write (string text, params object[] args)
 		{
 			Write(string.Format(text, args));
+			System.Diagnostics.Debug.Print (text, args);
 		}
 	}
 }

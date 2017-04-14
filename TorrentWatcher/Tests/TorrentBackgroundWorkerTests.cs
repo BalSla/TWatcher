@@ -57,7 +57,7 @@ namespace TorrentWatcher
 			IParsersManager parser = parserMock.Object;
 
 			TorrentBackgroundWorker worker = new TorrentBackgroundWorker (target, console, parser);
-			worker.DoPersonalWork (null);
+			worker.DoPersonalWork ();
 
 			Assert.AreEqual (1, target.Discovered.Count);
 		}
@@ -75,11 +75,7 @@ namespace TorrentWatcher
 			IParsersManager parser = parserMock.Object;
 
 			TorrentBackgroundWorker worker = new TorrentBackgroundWorker (target, console, parser);
-			worker.DoPersonalWork (new DoWorkEventArgs(new object()));
-			worker.CancelAsync ();
-			while (worker.IsBusy) {
-				Thread.Sleep (1000);
-			}
+			worker.DoPersonalWork ();
 
 			Assert.AreEqual (1, target.Discovered.Count);
 		}

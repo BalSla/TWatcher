@@ -25,36 +25,6 @@ namespace TorrentWatcher
 		}
 
 		[Test()]
-		public void ProcessQueue_Correctly_Reads_TVSeries_New_Item()
-		{
-			DeleteTestDataFiles ();
-			File.WriteAllText (NEW_ITEM_FILE, NEW_TV_SERIES);
-			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
-			_reader.ProcessQueue ();
-
-			Assert.AreEqual("New TV Series", _reader.IdleItems()[0].Name, "Wrong name!");
-			Assert.AreEqual (2, _reader.IdleItems() [0].Season, "Wrong season!");
-			Assert.AreEqual (3, _reader.IdleItems() [0].Episode, "Wrong episode!");
-		}
-
-		[Test()]
-		public void ProcessQueue_Correctly_Reads_TVSeries_Completed_Data_And_Correct_Existing_Watcher()
-		{
-			DeleteTestDataFiles ();
-			File.WriteAllText (NEW_ITEM_FILE, NEW_TV_SERIES);
-			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
-			_reader.ProcessQueue ();
-
-			DeleteTestDataFiles ();
-			File.WriteAllText (NEW_ITEM_FILE, COMPLETED_TV_SERIES);
-			_reader.ProcessQueue ();
-
-			Assert.AreEqual (1, _reader.IdleItems ().Count, "Wrong number of items!");
-			Assert.AreEqual (3, _reader.IdleItems() [0].Season, "Wrong season!");
-			Assert.AreEqual (4, _reader.IdleItems() [0].Episode, "Wrong episode!");
-		}
-
-		[Test()]
 		public void ProcessQueue_New_Item()
 		{
 			File.WriteAllText (NEW_ITEM_FILE, NEW_MOVIE);

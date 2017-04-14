@@ -13,7 +13,7 @@ namespace TorrentWatcher.Parsers
 			foreach (IParser item in _parsers) {
 				try {
 					list.AddRange (item.FindLinks (searchString, condition));
-				} catch (Exception ex){
+				} catch (Exception ex) {
 					_console.Write (string.Format ("Error: {1}", ex.Message));
 				}
 			}

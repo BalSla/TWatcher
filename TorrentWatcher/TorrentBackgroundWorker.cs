@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace TorrentWatcher
 {
-	public class TorrentBackgroundWorker : BackgroundWorker, ITorrentBackgroundWorker
+	public class TorrentBackgroundWorker : ITorrentBackgroundWorker
 	{
 		private TorrentTarget _torrent;
 		private MyConsole _console;
@@ -28,15 +28,11 @@ namespace TorrentWatcher
 			}
 		}
 
-		public void DoPersonalWork (DoWorkEventArgs e){
+		public void DoPersonalWork (){
 			_console.Debug ("Analyzing query [{0}]...", _torrent.Name);
 			_newLinks.Clear ();
 			IList<string> links=_parser.FindLinks(_torrent.Name, _torrent.SearchCondition);
 			foreach (string item in links) {
-				if (CancellationPending) {
-					_console.Debug ("Self canceling ({0})...", this._torrent.Name);
-					break;
-				}
 				if (_torrent.Discovered.AddUnique (item)) {
 					_newLinks.Add (item);
 					_console.Debug ("  Found torrent [{0}]", item);
@@ -54,7 +50,6 @@ namespace TorrentWatcher
 			_parser = parser;
 			_torrent = idleItem;
 			_console = console;
-			WorkerSupportsCancellation = true;
 		}
 	}
 }
