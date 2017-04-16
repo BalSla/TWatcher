@@ -131,12 +131,13 @@ namespace TorrentWatcher
 				foreach (TorrentTarget idleItem in _reader.IdleItems()) {
 					if (_workers.Find (x => x.Name == idleItem.Name) == null) {
 						TorrentBackgroundWorker newWorker = AddWatch (idleItem);
-						_console.Debug ("Watcher [{0}] added to queue.", newWorker.Name);
+						_console.Debug ("[{0}]...", newWorker.Name);
 						newWorker.DoPersonalWork ();
 						_publisher.Publish (newWorker.Name, newWorker.NewLinks);
 						_linksFoundCount += newWorker.NewLinks.Count;
-						_console.Debug ("Torrent watcher [{0}] has completed work.", newWorker.Name);
-						_console.Debug ("   found {0} torrent(s).", newWorker.NewLinks.Count);
+						if (newWorker.NewLinks.Count>0) {
+							_console.Debug ("   {0} torrent link(s) found.", newWorker.NewLinks.Count);
+						}
 					}
 				}
 			}

@@ -29,7 +29,6 @@ namespace TorrentWatcher
 		}
 
 		public void DoPersonalWork (){
-			_console.Debug ("Analyzing query [{0}]...", _torrent.Name);
 			_newLinks.Clear ();
 			IList<string> links=_parser.FindLinks(_torrent.Name, _torrent.SearchCondition);
 			foreach (string item in links) {
