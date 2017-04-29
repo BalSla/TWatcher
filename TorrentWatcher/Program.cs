@@ -29,10 +29,10 @@ namespace TorrentWatcher
 
 			// TODO: excludes (if something exists in header or link ignor such file)
 			if (!string.IsNullOrEmpty (category) && !string.IsNullOrEmpty (item)) {
-				watcher.Add (item, category, site);
+				watcher.AddTicket (Action.Add, item, category, site);
 				Environment.Exit (0);
 			} else if (!string.IsNullOrEmpty (item)) {
-				watcher.Add (item, "movie", site);
+				watcher.AddTicket (Action.Add, item, "Movie", site);
 				Environment.Exit (0);
 			} else if (!string.IsNullOrEmpty (remove)) {
 				watcher.Remove (remove);

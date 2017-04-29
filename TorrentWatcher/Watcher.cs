@@ -31,14 +31,13 @@ namespace TorrentWatcher
 
 		public void Remove (string remove)
 		{
-			File.WriteAllText (Path.GetRandomFileName()+".txt" ,string.Format("Completed:{0}",remove));
-			_console.Write ("Created ticket to delete [{0}].", remove);
+			AddTicket (Action.Remove, remove, "Movie", "");
 			_publisher.Remove (remove);
 		}
 
-		public void Add (string item, string category, string site, string ticketFile="")
+		public void AddTicket (Action action, string item, string category, string site, string ticketFile="")
 		{
-			Ticket ticket = new Ticket (Action.Add, item, category, site);
+			Ticket ticket = new Ticket (action, item, category, site);
 			if (string.IsNullOrEmpty (ticketFile)) {
 				ticketFile = Path.GetRandomFileName () + ".txt";
 			}
@@ -46,7 +45,7 @@ namespace TorrentWatcher
 			XmlSerializer serializer = new XmlSerializer (typeof(Ticket));
 			using (TextWriter writer = new StreamWriter(ticketFile)) {
 				serializer.Serialize (writer, ticket);
-				_console.Debug ("Ticket to add {0},{1},{2} has been saved.", item, category, site);
+				_console.Debug ("Ticket {0} to {1} has been saved.", ticket, action);
 			}
 		}
 

@@ -55,7 +55,7 @@ namespace TorrentWatcher
 			Watcher watcher = new Watcher(console, _reader, true);
 			string ticketFile = Path.GetRandomFileName () + ".test";
 
-			watcher.Add ("movie_title", "movie", "site_value", ticketFile);
+			watcher.AddTicket (Action.Add, "movie_title", "movie", "site_value", ticketFile);
 
 			string context = File.ReadAllText (ticketFile);
 
