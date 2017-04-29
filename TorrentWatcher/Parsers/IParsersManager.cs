@@ -5,7 +5,7 @@ namespace TorrentWatcher.Parsers
 {
 	public interface IParsersManager
 	{
-		IList<string> FindLinks (string searchString, SearchCondition condition);
+		IList<string> FindLinks (string searchString, SearchCondition condition, string site);
 	}
 }
 

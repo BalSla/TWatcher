@@ -30,7 +30,7 @@ namespace TorrentWatcher
 
 		public void DoPersonalWork (){
 			_newLinks.Clear ();
-			IList<string> links=_parser.FindLinks(_torrent.Name, _torrent.SearchCondition);
+			IList<string> links=_parser.FindLinks(_torrent.Name, _torrent.SearchCondition, _torrent.Site);
 			foreach (string item in links) {
 				if (_torrent.Discovered.AddUnique (item)) {
 					_newLinks.Add (item);

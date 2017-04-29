@@ -23,17 +23,18 @@ namespace TorrentWatcher
 			bool debug = !arguments.KeyExists ("nodebug");
 			bool hideall = arguments.KeyExists ("hideall");
 			bool watch = arguments.KeyExists ("watch");
+			string site = arguments.KeyValue ("site");
 
-			//TODO: Remove single cycle do it by default
-			bool singleCycle = arguments.KeyExists ("single");
+			Watcher watcher = new Watcher (console, reader, debug);
 
-			Watcher watcher = new Watcher (console, reader, debug, singleCycle);
-
+			// TODO: excludes (if something exists in header or link ignor such file)
+			// TODO: limit search by single site (Lostflm.tv for tv series)
+			// TODO: List unhided links
 			if (!string.IsNullOrEmpty (category) && !string.IsNullOrEmpty (item)) {
-				watcher.Add (item, category);
+				watcher.Add (item, category, site);
 				Environment.Exit (0);
 			} else if (!string.IsNullOrEmpty (item)) {
-				watcher.Add (item, "movie");
+				watcher.Add (item, "movie", site);
 				Environment.Exit (0);
 			} else if (!string.IsNullOrEmpty (remove)) {
 				watcher.Remove (remove);
@@ -65,11 +66,11 @@ WHERE:
      nodebug  - do not print debug messages
      TITLE    - movie title. If contains spaces then should be quoted.
      category - category of watcher (by default - movie)
-     single   - end watching after one cycle
+     site     - single site to search (in one world, like 'lostfilm')
 ");
 				Environment.Exit (0);
 			}
-			//TODO: Possibility toadd date tostart search from
+			//TODO: Possibility to add date tostart search from
 			//TODO: Possibility to add comment (add coment on links page as well)
 		}
 	}

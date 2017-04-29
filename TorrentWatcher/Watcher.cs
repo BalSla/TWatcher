@@ -10,6 +10,7 @@ using System.IO;
 using TorrentWatcher.Parsers;
 using System.Diagnostics;
 using System.Timers;
+using System.Xml.Serialization;
 
 namespace TorrentWatcher
 {
@@ -19,16 +20,13 @@ namespace TorrentWatcher
 		private ITargetReader _reader;
 		private int _linksFoundCount;
 		private IPublisher _publisher;
-		private bool _canceling;
-		private bool _singleCycle;
 
-		public Watcher (MyConsole console, ITargetReader reader, bool debug, bool singleCycle)
+		public Watcher (MyConsole console, ITargetReader reader, bool debug)
 		{
 			_console = console;
 			_reader = reader;
 			_console.DebugOn = debug;
 			_publisher = new HtmlLinkPublisher ("links.html");
-			_singleCycle = singleCycle;
 		}
 
 		public void Remove (string remove)
@@ -36,6 +34,20 @@ namespace TorrentWatcher
 			File.WriteAllText (Path.GetRandomFileName()+".txt" ,string.Format("Completed:{0}",remove));
 			_console.Write ("Created ticket to delete [{0}].", remove);
 			_publisher.Remove (remove);
+		}
+
+		public void Add (string item, string category, string site, string ticketFile="")
+		{
+			Ticket ticket = new Ticket (Action.Add, item, category, site);
+			if (string.IsNullOrEmpty(ticketFile)) {
+				ticketFile = Path.GetRandomFileName () + ".txt";
+			}
+
+			XmlSerializer serializer = new XmlSerializer (typeof(Ticket));
+			using (TextWriter writer = new StreamWriter(ticketFile)) {
+				serializer.Serialize (writer, ticket);
+				_console.Debug ("Ticket to add {0},{1},{2} has been saved.", item, category, site);
+			}
 		}
 
 		public void HideAllLinks ()
@@ -48,28 +60,7 @@ namespace TorrentWatcher
 			_publisher.Hide (hide);
 		}
 
-		public void Add (string item, string category)
-		{
-			string context = item;
-			switch(category){
-			case "tvseries":
-				context = string.Format ("TVS[{0}]", item);
-					break;
-			case "movie":
-				break;
-			case "sport":
-				context = string.Format ("Sport[{0}]", item);
-				break;
-			default:
-				throw new NotImplementedException (string.Format("Ctaegory [{0}] is not supported yet!", category));
-		}
-
-			File.WriteAllText (Path.GetRandomFileName()+".txt" ,context);
-			_console.Write ("Created ticket for [{0}] ({1}).", item, category);
-		}
-
 		private List<TorrentBackgroundWorker> _workers = new List<TorrentBackgroundWorker> ();
-		private BackgroundWorker _consoleReader = new BackgroundWorker();
 
 		void PublishStatistics ()
 		{
@@ -90,10 +81,6 @@ namespace TorrentWatcher
 			_console.Debug ("Torrent watcher [{0}] has completed work.", worker.Name);
 			_console.Debug ("   found {0} torrent(s).", worker.NewLinks.Count);
 			_activeWatchersCounter--;
-
-			if (_singleCycle && _activeWatchersCounter==0) {
-				_consoleReader.CancelAsync ();
-			}
 		}
 
 		TorrentBackgroundWorker AddWatch (TorrentTarget idleItem)
@@ -125,7 +112,6 @@ namespace TorrentWatcher
 		void ProcessQueue ()
 		{
 			_activeWatchersCounter = 0;
-			if (!_canceling) {
 				_reader.ProcessQueue ();
 				// create and start watcher for each item
 				foreach (TorrentTarget idleItem in _reader.IdleItems()) {
@@ -140,7 +126,6 @@ namespace TorrentWatcher
 						}
 					}
 				}
-			}
 		}
 	}
 }

@@ -16,6 +16,16 @@ namespace TorrentWatcher
 
 			Assert.IsTrue (links.Count > 0);
 		}
+
+		[Test()]
+		public void ToString_Returns_Class_Type()
+		{
+			LostFilmParser p = new LostFilmParser ();
+
+			Assert.IsTrue (p.ToString ().Contains ("LostFilmParser"));
+		}
 	}
+
+
 }
 
