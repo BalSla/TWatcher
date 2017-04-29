@@ -28,8 +28,6 @@ namespace TorrentWatcher
 			Watcher watcher = new Watcher (console, reader, debug);
 
 			// TODO: excludes (if something exists in header or link ignor such file)
-			// TODO: limit search by single site (Lostflm.tv for tv series)
-			// TODO: List unhided links
 			if (!string.IsNullOrEmpty (category) && !string.IsNullOrEmpty (item)) {
 				watcher.Add (item, category, site);
 				Environment.Exit (0);

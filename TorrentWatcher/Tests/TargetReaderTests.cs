@@ -10,10 +10,34 @@ namespace TorrentWatcher
 	{
 		private const string NEW_ITEM_FILE = "newitem.txt";
 		private const string NEW_ITEM_FILE_1 = "newitem1.txt";
-		private const string NEW_MOVIE = "New Movie";
-		private const string NEW_TV_SERIES = "TVS[2,3]:New TV Series";
-		private const string COMPLETED_MOVIE = @"Completed:New Movie";
-		private const string COMPLETED_TV_SERIES = "CompletedTVS[3,4]:New TV Series";
+		private const string NEW_MOVIE = @"<?xml version='1.0' encoding='utf-8'?>
+<Ticket xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema'>
+  <Title>movie_title</Title>
+  <Category>Movie</Category>
+  <Site>site_value</Site>
+  <Action>Add</Action>
+</Ticket>";
+		private const string NEW_TV_SERIES = @"<?xml version='1.0' encoding='utf-8'?>
+<Ticket xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema'>
+  <Title>movie_series_title</Title>
+  <Category>TvSeries</Category>
+  <Site>site_value</Site>
+  <Action>Add</Action>
+</Ticket>";
+		private const string COMPLETED_MOVIE = @"<?xml version='1.0' encoding='utf-8'?>
+<Ticket xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema'>
+  <Title>movie_title</Title>
+  <Category>Movie</Category>
+  <Site>site_value</Site>
+  <Action>Remove</Action>
+</Ticket>";
+		private const string COMPLETED_TV_SERIES = @"<?xml version='1.0' encoding='utf-8'?>
+<Ticket xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema'>
+  <Title>movie_series_title</Title>
+  <Category>TvSeries</Category>
+  <Site>site_value</Site>
+  <Action>Remove</Action>
+</Ticket>";
 		private const string SAVED_ITEMS = @"";
 		//private TargetReader _reader;
 
@@ -36,7 +60,7 @@ namespace TorrentWatcher
 			string context = File.ReadAllText (ticketFile);
 
 			Assert.IsTrue(context.Contains("<Title>movie_title</Title>"), "Title saved incorrectly!");
-			Assert.IsTrue(context.Contains("<Category>movie</Category>"), "Category saved incorrectly!");
+			Assert.IsTrue(context.Contains("<Category>Movie</Category>"), "Category saved incorrectly!");
 			Assert.IsTrue(context.Contains("<Site>site_value</Site>"), "Site saved incorrectly!");
 		}
 
@@ -51,9 +75,6 @@ namespace TorrentWatcher
       <string>http://kinozal.tv/details.php?id=1506560</string>
       <string>http://kinozal.tv/details.php?id=1244052</string>
     </Discovered>
-    <TvSeries>false</TvSeries>
-    <Season>0</Season>
-    <Episode>0</Episode>
     <SearchCondition>Movie</SearchCondition>
   </TorrentTarget>
 </ArrayOfTorrentTarget>";
@@ -72,8 +93,8 @@ namespace TorrentWatcher
 			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 			_reader.ProcessQueue ();
 
-			Assert.AreEqual(NEW_MOVIE, _reader.IdleItems()[0].Name, "Wrong name of new item!");
-			Assert.IsFalse(_reader.IdleItems()[0].TvSeries, "Wrong type of new item!");
+			Assert.AreEqual("movie_title", _reader.IdleItems()[0].Name, "Wrong name of new item!");
+			Assert.AreEqual(SearchCondition.Movie, _reader.IdleItems()[0].SearchCondition, "Wrong type of new item!");
 		}
 
 		[Test()]
@@ -86,7 +107,7 @@ namespace TorrentWatcher
 			File.Delete (NEW_ITEM_FILE);
 			File.Delete (NEW_ITEM_FILE_1);
 
-			Assert.AreEqual(NEW_MOVIE, _reader.IdleItems()[0].Name, "Wrong name of new item!");
+			Assert.AreEqual("movie_title", _reader.IdleItems()[0].Name, "Wrong name of new item!");
 			Assert.AreEqual(1, _reader.IdleItems().Count, "Duplicated item created!");
 		}
 
@@ -133,7 +154,7 @@ namespace TorrentWatcher
 			doc.Load (_reader.Queue);
 			XmlNodeList nodes = doc.SelectNodes ("//TorrentTarget");
 
-			Assert.AreEqual(NEW_MOVIE, nodes[0].SelectSingleNode("Name").InnerText, "Wrong name of the first item!");
+			Assert.AreEqual("movie_title", nodes[0].SelectSingleNode("Name").InnerText, "Wrong name of the first item!");
 			Assert.AreEqual(2, nodes.Count, "Wrong number of saved items!");
 		}
 		private string _file;

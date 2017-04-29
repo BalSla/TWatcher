@@ -89,6 +89,7 @@
     <Compile Include="Tests\LostFilmParserTests.cs" />
     <Compile Include="Tests\ParsersManagerTests.cs" />
     <Compile Include="Ticket.cs" />
+    <Compile Include="Tests\TicketTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

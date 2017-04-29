@@ -39,7 +39,7 @@ namespace TorrentWatcher
 		public void Add (string item, string category, string site, string ticketFile="")
 		{
 			Ticket ticket = new Ticket (Action.Add, item, category, site);
-			if (string.IsNullOrEmpty(ticketFile)) {
+			if (string.IsNullOrEmpty (ticketFile)) {
 				ticketFile = Path.GetRandomFileName () + ".txt";
 			}
 

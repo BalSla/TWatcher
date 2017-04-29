@@ -39,10 +39,10 @@ namespace TorrentWatcher
 			return _targets;
 		}
 
-		void RemoveItem (string str)
+		void RemoveItem (string title)
 		{
-			str = str.TrimEnd ();
-			TorrentTarget target = _targets.Find (x => x.Name == str);
+			title = title.TrimEnd ();
+			TorrentTarget target = _targets.Find (x => x.Name == title);
 			if (target!=null) {
 				_targets.Remove (target);
 				_removedItems++;
@@ -69,66 +69,25 @@ namespace TorrentWatcher
 			_console.Write ("Read {0} watched items.", _targets.Count);
 		}
 
-		private string ExctractName(string text)
-		{
-			return text.Split (':') [1];
-		}
-
-		private int ExctractSeason(string content){
-			return Convert.ToInt32(content.Split ('[') [1].Split (',') [0]);
-		}
-
-		private int ExctractEpisode(string content){
-			return Convert.ToInt32(content.Split ('[') [1].Split (']') [0].Split(',')[1]);
-		}
-
-		string ExctractSite (string content)
-		{
-			if (content.Contains (";Site=")) {
-				throw new NotImplementedException ();
-			} else {
-				return "";
-			}
-		}
-
 		public void ProcessQueue ()
 		{
 			ReadQueue ();
 			_console.Debug ("Reading new entries within working folder...");
 			foreach (FileInfo item in new DirectoryInfo(".").GetFiles("*.txt")) {
-			string content = File.ReadAllText (item.FullName);
-				//TODO:add books, documental and russian
-				if (content.StartsWith ("Completed:")) {
-					_console.Debug ("Found completed item [{0}].", content);
-					RemoveItem (content.Replace ("Completed:", ""));
-				} else if(content.StartsWith ("CompletedTVS[")){
-					string name = ExctractName (content);
-					RemoveItem (name);
-					int season = ExctractSeason(content);
-					int episode = ExctractEpisode(content);
-					string site = ExctractSite (content);
-					TorrentTarget newTarget = new TorrentTarget (name, SearchCondition.TvSeries, season, episode, site);
-					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
-						AddTarget(newTarget);
-					}
-				}else if (content.StartsWith ("TVS[")) {
-					string name = content.Replace("TVS[", "").Replace("]","");
-					TorrentTarget newTarget = new TorrentTarget (name, SearchCondition.TvSeries, ExctractSite (content));
-					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
-						AddTarget(newTarget);
-					}
-				}else if (content.StartsWith ("Sport[")) {
-					string name = content.Replace("Sport[", "").Replace("]","");
-					TorrentTarget newTarget = new TorrentTarget (name, SearchCondition.Sport, ExctractSite (content));
-					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
-						AddTarget(newTarget);
-					}
-				} else {
-					TorrentTarget newTarget = new TorrentTarget (content, SearchCondition.Movie, ExctractSite (content));
-					if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
-						AddTarget(newTarget);
+					XmlSerializer deserializer = new XmlSerializer (typeof(Ticket));
+				using (TextReader reader = new StreamReader(item.FullName)) {
+					Ticket ticket = (Ticket)deserializer.Deserialize (reader);
+					if (ticket.Action==Action.Remove) {
+						_console.Debug ("Found completed item [{0}].", ticket);
+						RemoveItem (ticket.Title);
+					} else {
+						TorrentTarget newTarget = new TorrentTarget (ticket.Title, ticket.Category, ticket.Site);
+						if (!_targets.Exists(x=>x.Name==newTarget.Name)) {
+							AddTarget(newTarget);
+						}
 					}
 				}
+				//TODO:add books, documental and russian
 				// delete input file
 				File.Delete (item.FullName);
 			}
