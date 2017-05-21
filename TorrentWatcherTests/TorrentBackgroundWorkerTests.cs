@@ -1,20 +1,18 @@
-using NUnit.Framework;
-using System;
-using CsQuery;
 using TorrentWatcher.Parsers;
 using Moq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
+	[TestClass]
 	public class TorrentBackgroundWorkerTests
 	{
 		private string _test;
 
-		[Test()]
+		[TestMethod]
 		public void DoWork_Waits_For_Work_Compled(){
 			_test = "fail";
 			BackgroundWorker worker = new BackgroundWorker ();
@@ -45,7 +43,7 @@ namespace TorrentWatcher
 			_test = "test";
 		}
 
-		[Test()]
+		[TestMethod]
 		public void DoPersonalWork_Adds_New_Link_To_TorrentTarget()
 		{
 			TorrentTarget target = new TorrentTarget("Героин",SearchCondition.Movie, "");
@@ -62,7 +60,7 @@ namespace TorrentWatcher
 			Assert.AreEqual (1, target.Discovered.Count);
 		}
 
-		[Test()]
+		[TestMethod]
 		public void DoPersonalWork_Doesnt_Add_Already_Reported_Link()
 		{
 			TorrentTarget target = new TorrentTarget("Героин", SearchCondition.Movie, "");

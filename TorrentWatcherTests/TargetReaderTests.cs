@@ -1,11 +1,10 @@
-using NUnit.Framework;
-using System;
 using System.Xml;
 using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
+	[TestClass]
 	public class TargetReaderTests
 	{
 		private const string NEW_ITEM_FILE = "newitem.txt";
@@ -41,13 +40,13 @@ namespace TorrentWatcher
 		private const string SAVED_ITEMS = @"";
 		//private TargetReader _reader;
 
-		[TestFixtureSetUp()]
+		[TestInitialize]
 		public void TestFixtureSetup()
 		{
 			//_reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Add_Creates_Ticket_File_As_XML()
 		{
 			MyConsole console = new MyConsole ();
@@ -64,7 +63,7 @@ namespace TorrentWatcher
 			Assert.IsTrue(context.Contains("<Site>site_value</Site>"), "Site saved incorrectly!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void ReadQueue_Reads_Target()
 		{
 			string content= @"<?xml version='1.0' encoding='utf-8'?>
@@ -86,7 +85,7 @@ namespace TorrentWatcher
 			Assert.AreEqual(1,_reader.IdleItems().Count, "Wrong number of items from queue!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void ProcessQueue_New_Item()
 		{
 			File.WriteAllText (NEW_ITEM_FILE, NEW_MOVIE);
@@ -97,7 +96,7 @@ namespace TorrentWatcher
 			Assert.AreEqual(SearchCondition.Movie, _reader.IdleItems()[0].SearchCondition, "Wrong type of new item!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void ProcessQueue_Duplicate_Item_Wont_Created()
 		{
 			File.WriteAllText (NEW_ITEM_FILE, NEW_MOVIE);
@@ -111,7 +110,7 @@ namespace TorrentWatcher
 			Assert.AreEqual(1, _reader.IdleItems().Count, "Duplicated item created!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void ProcessQueue_Remove_Completed_Item()
 		{
 			File.WriteAllText (NEW_ITEM_FILE, NEW_MOVIE);
@@ -124,7 +123,7 @@ namespace TorrentWatcher
 			Assert.AreEqual(0, _reader.IdleItems().Count, "Item hasn't been removed!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void SaveIncompleted_Saves_Target_Site()
 		{
 			_file = Path.GetRandomFileName()+".test";
@@ -138,7 +137,7 @@ namespace TorrentWatcher
 			Assert.IsTrue (queue.Contains ("<Site>test_site"));
 		}
 
-		[Test()]
+		[TestMethod]
 		public void SaveIncompleted_Saves_Items()
 		{
 			_file = Path.GetRandomFileName()+".test";
@@ -159,7 +158,7 @@ namespace TorrentWatcher
 		}
 		private string _file;
 
-		[Test()]
+		[TestMethod]
 		public void ProcessQueue_Doesnt_Throw_Exception_If_Queue_File_Is_Not_Existing()
 		{
 			TargetReader _reader = new TargetReader (new MyConsole(), Path.GetRandomFileName()+".test");

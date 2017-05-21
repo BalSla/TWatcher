@@ -1,13 +1,12 @@
-using NUnit.Framework;
-using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
+	[TestClass]
 	public class LostFilmParserTests
 	{
-		[Test()]
+		[TestMethod]
 		public void FindLinks_Returns_At_Least_One ()
 		{
 			LostFilmParser parser = new LostFilmParser ();
@@ -17,7 +16,7 @@ namespace TorrentWatcher
 			Assert.IsTrue (links.Count > 0);
 		}
 
-		[Test()]
+		[TestMethod]
 		public void ToString_Returns_Class_Type()
 		{
 			LostFilmParser p = new LostFilmParser ();

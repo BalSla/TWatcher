@@ -3,3 +3,8 @@
 ################################################################################
 
 /TorrentWatcher/bin
+/TorrentWatcher/.vs/TorrentWatcher/v15/.suo
+/TorrentWatcher/obj/**
+/TorrentWatcher/packages/**
+/TorrentWatcherTests/bin/**
+/TorrentWatcherTests/obj/**

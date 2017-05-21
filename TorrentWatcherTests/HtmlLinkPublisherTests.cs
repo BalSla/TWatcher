@@ -1,20 +1,18 @@
-using NUnit.Framework;
-using System;
 using System.IO;
 using System.Collections.Generic;
 using CsQuery;
-using System.Text;
 using System.Web;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
-	public class HtmlLinkPublisherTests
+    [TestClass]
+    public class HtmlLinkPublisherTests
 	{
 		private HtmlLinkPublisher _publisher;
 		private const string OUTPUT_HTML="test_links.html";
 
-		[TestFixtureSetUp()]
+		[TestInitialize]
 		public void TestFixtureSetup()
 		{
 			_publisher = new HtmlLinkPublisher (OUTPUT_HTML);
@@ -27,7 +25,7 @@ namespace TorrentWatcher
 			}
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Publish_Creates_New_Html_File ()
 		{
 			DeleteTestFiles ();
@@ -36,7 +34,7 @@ namespace TorrentWatcher
 			Assert.IsTrue (File.Exists (OUTPUT_HTML), "Output hasn't been created!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Publish_Creates_New_Html_File_With_Title_Within ()
 		{
 			DeleteTestFiles ();
@@ -53,7 +51,7 @@ namespace TorrentWatcher
 			File.WriteAllText (OUTPUT_HTML, "<html><head><meta charset='utf-8'/></head><body><h1 id=\"header\">TorrentWatcher links</h1><h2>Title</h2><ul><li>testlink1</li><li>testlink2</li></ul></body></html>");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Publish_Append_New_Title ()
 		{
 			DeleteTestFiles ();
@@ -65,7 +63,7 @@ namespace TorrentWatcher
 			Assert.IsTrue (context.Contains("<h2>Title1</h2>"), "Output doesn't contain new title!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Publish_Append_New_Link_To_Existing_Title ()
 		{
 			DeleteTestFiles ();
@@ -79,7 +77,7 @@ namespace TorrentWatcher
 			Assert.AreEqual (1, doc.Select("h2:contains(Title)").Filter(x=>x.InnerText=="Title").Next().Select("li:contains(testlink3)").Length, "Output doesn't contain 3-st link!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Publish_Append_New_Singel_Only_Link_To_Existing_Title ()
 		{
 			DeleteTestFiles ();
@@ -92,7 +90,7 @@ namespace TorrentWatcher
 			Assert.AreEqual (1, doc.Select("h2").Filter(x=>x.InnerText=="Title").Next().Select("li:contains(testlink4a)").Length, "Output doesn't contain expected link!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Remove_Title_And_Related_Links ()
 		{
 			DeleteTestFiles ();
@@ -109,7 +107,7 @@ namespace TorrentWatcher
 			Assert.AreEqual (0, doc.Select("li:contains(testlink3)").Length, "Output contains 3-st link!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Publish_Hide_Hides_All_Titles_Links ()
 		{
 			DeleteTestFiles ();
@@ -125,7 +123,7 @@ namespace TorrentWatcher
 			Assert.AreEqual (1, doc.Select ("li:contains(link3)").Length, "Missing link!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Publish_Hide_Hides_All_Titles_Cyrillic_Links ()
 		{
 			DeleteTestFiles ();
@@ -141,7 +139,7 @@ namespace TorrentWatcher
 			Assert.AreEqual (1, doc.Select ("li:contains(link1)").Length, "Missing link!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void Save_Cyrillic_In_Html()
 		{
 			DeleteTestFiles ();
@@ -152,7 +150,7 @@ namespace TorrentWatcher
 			Assert.AreEqual (1, doc.Select ("h2:contains(Мумия)").Filter(x=>HttpUtility.HtmlDecode(x.InnerText)=="Мумия").Length, "Missed title!");
 		}
 
-		[Test()]
+		[TestMethod]
 		public void HideAllLinks_Hides_Links_For_Every_Title()
 		{
 			DeleteTestFiles ();

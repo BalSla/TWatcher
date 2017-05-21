@@ -15,7 +15,7 @@ namespace TorrentWatcher.Parsers
 					try {
 						list.AddRange (item.FindLinks (searchString, condition));
 					} catch (Exception ex) {
-						_console.Write (string.Format ("Error: {1}", ex.Message));
+						_console.Write (string.Format ("Error ({1}): {0}", ex.Message, item));
 					}
 				}
 			}

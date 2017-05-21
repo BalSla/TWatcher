@@ -105,6 +105,10 @@ namespace TorrentWatcher
 			_console.Write ("Work finished.");
 			PublishStatistics ();
 
+            if (_linksFoundCount>0)
+            {
+                Process.Start("links.html");
+            }
 			return _linksFoundCount == 0 ? 0 : 2;
 		}
 

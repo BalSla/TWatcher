@@ -1,14 +1,13 @@
-using NUnit.Framework;
-using System;
 using System.Xml.Serialization;
 using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
+	[TestClass]
 	public class TorrentTargetTests
 	{
-		[Test()]
+		[TestMethod]
 		public void TorrentTarget_Discovered_Links_Are_Serializable ()
 		{
 			DeleteTestDataFiles ();

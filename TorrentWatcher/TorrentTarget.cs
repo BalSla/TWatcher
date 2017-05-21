@@ -14,16 +14,16 @@ namespace TorrentWatcher
 			Site = site;
 		}
 
-		public string Name{ get; private set; }
-		public List<string> Discovered {get; private set; }
+		public string Name { get; set; }
+		public List<string> Discovered {get;  set; }
 
 		public TorrentTarget ()
 		{
 			Discovered=new List<string>();
 		}
 
-		public SearchCondition SearchCondition { get; private set; }
-		public string Site { get; private set; }
+		public SearchCondition SearchCondition { get;  set; }
+		public string Site { get;  set; }
 	}
 }
 

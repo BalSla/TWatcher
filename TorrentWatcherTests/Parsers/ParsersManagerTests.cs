@@ -1,15 +1,14 @@
-using NUnit.Framework;
-using System;
 using TorrentWatcher.Parsers;
 using Moq;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
+	[TestClass]
 	public class ParsersManagerTests
 	{
-		[Test()]
+		[TestMethod]
 		public void FindLinks_Calls_Specified_By_Site_Parser ()
 		{
 			Mock<IParser> parser = new Mock<IParser> ();
@@ -21,7 +20,7 @@ namespace TorrentWatcher
 			parser.Verify(x=>x.FindLinks(It.IsAny<string>(), It.IsAny<SearchCondition>()), Times.Once());
 		}
 
-		[Test()]
+		[TestMethod]
 		public void FindLinks_Dosent_Call_Unspecified_By_Site_Parser ()
 		{
 			Mock<IParser> parser = new Mock<IParser> ();
@@ -33,7 +32,7 @@ namespace TorrentWatcher
 			parser.Verify(x=>x.FindLinks(It.IsAny<string>(), It.IsAny<SearchCondition>()), Times.Never);
 		}
 
-		[Test()]
+		[TestMethod]
 		public void FindLinks_Calls_All_Parsers_If_Site_Unspecified ()
 		{
 			Mock<IParser> parser1 = new Mock<IParser> ();

@@ -1,14 +1,13 @@
-using NUnit.Framework;
-using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using TorrentWatcher.Helpers;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
+    [TestClass]
 	public class ListExtentionsTests
 	{
-		[Test()]
+		[TestMethod]
 		public void KeyValue_Returns_Value ()
 		{
 			List<string> args = new List<string>() {"/k:ggg","/fff"};
@@ -16,7 +15,7 @@ namespace TorrentWatcher
 			Assert.AreEqual("ggg", args.KeyValue("k"));
 		}
 
-		[Test()]
+		[TestMethod]
 		public void KeyValue_Returns_Empty_If_No_Key ()
 		{
 			List<string> args = new List<string>() {"/k:ggg","/fff"};

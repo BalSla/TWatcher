@@ -1,11 +1,10 @@
-using NUnit.Framework;
-using System;
 using System.Xml.Serialization;
 using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
+	[TestClass]
 	public class TicketTests
 	{
 		private const string NEW_MOVIE = @"<?xml version='1.0' encoding='utf-8'?>
@@ -16,7 +15,7 @@ namespace TorrentWatcher
   <Action>Add</Action>
 </Ticket>";
 
-		[Test()]
+		[TestMethod]
 		public void Ticket_May_Be_Deserilized ()
 		{
 			string file = Path.GetRandomFileName () + ".test";

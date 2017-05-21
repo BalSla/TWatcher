@@ -1,15 +1,14 @@
-using NUnit.Framework;
-using System;
 using TorrentWatcher.Parsers;
 using System.Collections.Generic;
 using TorrentWatcher.Helpers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TorrentWatcher
 {
-	[TestFixture()]
+	[TestClass]
 	public class KrutorParserTests
 	{
-		[Test()]
+		[TestMethod]
 		public void FindLinks_Returns_At_Least_One_Movie ()
 		{
 			KrutorParser parser = new KrutorParser ();
@@ -19,7 +18,7 @@ namespace TorrentWatcher
 			Assert.IsTrue (links.Count > 0);
 		}
 
-		[Test()]
+		[TestMethod]
 		public void FindLinks_Returns_At_Least_One_Sport ()
 		{
 			KrutorParser parser = new KrutorParser ();
@@ -29,7 +28,7 @@ namespace TorrentWatcher
 			Assert.IsTrue (links.Count > 0);
 		}
 
-		[Test()]
+		[TestMethod]
 		public void FindLinks_Returns_At_Least_One_TVSeries ()
 		{
 			KrutorParser parser = new KrutorParser ();

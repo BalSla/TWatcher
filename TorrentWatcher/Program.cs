@@ -28,6 +28,7 @@ namespace TorrentWatcher
 			Watcher watcher = new Watcher (console, reader, debug);
 
 			// TODO: excludes (if something exists in header or link ignor such file)
+            // TODO: audiobook search (using sky search)
 			if (!string.IsNullOrEmpty (category) && !string.IsNullOrEmpty (item)) {
 				watcher.AddTicket (Action.Add, item, category, site);
 				Environment.Exit (0);
