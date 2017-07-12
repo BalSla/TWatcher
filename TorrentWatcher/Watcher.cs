@@ -94,10 +94,9 @@ namespace TorrentWatcher
 		{
 			_console.Write ("Starting TorrentWatcher...");
 			_console.Debug ("Debug mode is on.");
-			//IParser krutor = new KrutorParser ();
 			IParser kinozal = new KinozalParser ();
 			IParser lostfilm = new LostFilmParser ();
-			_parserManager = new ParsersManager (_console, krutor,kinozal,lostfilm);
+			_parserManager = new ParsersManager (_console, kinozal,lostfilm);
 			//TODO: Implement rgfootball.net parser
 			_console.Debug ("Watcher started");
 			ProcessQueue ();

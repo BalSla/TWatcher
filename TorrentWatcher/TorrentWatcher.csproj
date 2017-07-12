@@ -86,7 +86,6 @@
     <Compile Include="ITargetReader.cs" />
     <Compile Include="TargetReader.cs" />
     <Compile Include="TorrentBackgroundWorker.cs" />
-    <Compile Include="Parsers\KrutorParser.cs" />
     <Compile Include="Parsers\IParser.cs" />
     <Compile Include="Parsers\ParsersManager.cs" />
     <Compile Include="Helpers\ListExtentions.cs" />
