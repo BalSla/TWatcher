@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\TorrentWatcher"
+    "\\TorrentWatcher",
+    "\\TorrentWatcher\\Parsers"
   ],
-  "SelectedNode": "\\TorrentWatcher\\TorrentWatcher.sln",
+  "SelectedNode": "\\TorrentWatcher\\Parsers",
   "PreviewInSolutionExplorer": false
 }

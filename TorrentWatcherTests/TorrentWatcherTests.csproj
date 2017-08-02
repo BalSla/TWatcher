@@ -64,6 +64,7 @@
     <Compile Include="ListExtentionsTests.cs" />
     <Compile Include="MyConsoleTests.cs" />
     <Compile Include="Parsers\KinozalParserTests.cs" />
+    <Compile Include="Parsers\KrutorParserTests.cs" />
     <Compile Include="Parsers\LostFilmParserTests.cs" />
     <Compile Include="Parsers\ParsersManagerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

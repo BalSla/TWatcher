@@ -96,7 +96,8 @@ namespace TorrentWatcher
 			_console.Debug ("Debug mode is on.");
 			IParser kinozal = new KinozalParser ();
 			IParser lostfilm = new LostFilmParser ();
-			_parserManager = new ParsersManager (_console, kinozal,lostfilm);
+            IParser krutor = new KrutorParser();
+			_parserManager = new ParsersManager (_console, kinozal,lostfilm, krutor);
 			//TODO: Implement rgfootball.net parser
 			_console.Debug ("Watcher started");
 			ProcessQueue ();
